@@ -309,7 +309,7 @@ export default function edit(props) {
                 </div>
                 <Grid container spacing={3}>
                     <Grid item md={6}>
-                        <TextField name='montant' value={data.avance[0].montant} size="small" fullWidth label='Avance' onChange={handleChange}/>
+                        <TextField name='montant' value={data.avance[0].montant} size="small" fullWidth label='Avance' onChange={handleAvanceChange}/>
                     </Grid>
                     <Grid item md={6}>
                         <TextField name='reste' size="small" fullWidth label='Reste' value={data.reste} disabled />
