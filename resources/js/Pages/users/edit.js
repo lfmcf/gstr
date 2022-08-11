@@ -48,7 +48,7 @@ export default function create(props) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        post(route('storeUser'));
+        post(route('updateUser'));
     }
 
     return (

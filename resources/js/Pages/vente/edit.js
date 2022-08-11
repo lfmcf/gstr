@@ -118,7 +118,7 @@ export default function edit(props) {
     const handleSubmit = (e) => {
         e.preventDefault();
         // console.log(data)
-        post(route('storevente'));
+        post(route('updateVente'));
     }
 
     let voptions = props.vendeur.map(function (sa) {

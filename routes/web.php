@@ -88,7 +88,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/vente/create', [VenteController::class, 'create'])->name("createVente");
     Route::post('/storevente', [VenteController::class, 'store'])->name("storevente");
     Route::get('/vente/update/{id}', [VenteController::class, 'edit'])->name('editVente');
-    Route::post('/deleteVente', [VenteController::class, 'destroy'])->name("deleteVente");
+    Route::post('/updateVente', [VenteController::class, 'update'])->name("updateVente");
     Route::get('/avance/{id}', [VenteController::class, 'getavance'])->name("avance");
     Route::post('/deleteVente', [VenteController::class, 'destroy'])->name("deleteVente");
     Route::post('/addAvance', [VenteController::class, 'updateAvance'])->name('addAvance');
