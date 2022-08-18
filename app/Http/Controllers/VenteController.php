@@ -100,9 +100,12 @@ class VenteController extends Controller
      * @param  \App\Models\Vente  $vente
      * @return \Illuminate\Http\Response
      */
-    public function show(Vente $vente)
+    public function show(Request $request)
     {
-        //
+        $vent = Vente::find($request->id); 
+        return Inertia::render('vente/show', [
+            'vente' => $vent
+        ]);
     }
 
     /**
@@ -137,6 +140,7 @@ class VenteController extends Controller
      */
     public function update(Request $request, Vente $vente)
     {
+        
         $vent = Vente::find($request->id);
         $vent->bon = $request->bon;
         $vent->date = date('Y-m-d H:i:s', strtotime($request->date));
@@ -180,8 +184,30 @@ class VenteController extends Controller
      * @param  \App\Models\Vente  $vente
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Vente $vente)
+    public function destroy(Vente $vente, Request $request)
     {
-        //
+        foreach($request->ids as $id) {
+            Vente::find($id)->delete($id);
+        }
+
+        return redirect('vente');
+    }
+
+    public function getavance(Request $request) 
+    {
+        $vent = Vente::findOrFail($request->id);
+        return Inertia::render('vente/avance', [
+            'vente' => $vent->id
+        ]);
+    }
+
+    public function updateAvance(Request $request) {
+        
+        $vent = Vente::find($request->id);
+        $avance = $vent->avance;
+        array_push($avance, ['date' => $request->date, 'montant' => $request->montant]);
+        $vent->avance = $avance;
+        $vent->save();
+        return redirect('vente');
     }
 }

@@ -32,7 +32,7 @@ class DashbordController extends Controller
 
         $caise = Vente::all();
         $charge = Charge::all();
-
+        //dd($caise);
         $total = 0;
         // foreach ($caise as $cs) {
         //     foreach($cs->avance['montant'] as $av) {
@@ -47,7 +47,7 @@ class DashbordController extends Controller
         $from = date('Y-m-01');
         $to = date('Y-m-t');
         $situation = $this->getSituation($from, $to);
-
+        
         return Inertia::render('Dashboard', [
             'echeance' => $echeance,
             'cntpex' => $cntpex,
@@ -62,10 +62,16 @@ class DashbordController extends Controller
         // return view('dashboard', compact('echeance', 'cntpex', 'cntpin', 'clits', 'vnts', 'clt', 'total', 'situation'));
     }
 
+    public function situation(Request $request) {
+       
+       $situation = $this->getSituation(date("y-m-d", strtotime($request->from)), date("y-m-d", strtotime($request->to)));
+       return response()->json($situation);
+    }
+
     public function getSituation($from, $to) 
     {
         $situation = Vente::whereBetween('created_at', [$from, $to])
-        ->get()->groupBy('produit.name');
+        ->get()->groupBy('produit.*.name');
         return $situation;
     }
 }

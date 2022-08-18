@@ -10,7 +10,7 @@
 .sideBar {
     position: fixed;
     bottom: 0;
-    z-index: 99;
+    z-index: 1000;
     width: 240px;
     box-shadow: 0 1px 30px 1px rgb(0 0 0 / 11%);
     /* padding-top: 60px; */
@@ -31,7 +31,7 @@
     display: flex;
     box-shadow: 0 2px 15px 0 rgb(0 0 0 / 5%);
     border-bottom:1px solid #e6e6e6;
-    z-index: 99;
+    z-index: 999;
     background: white;
     align-items: center;
     justify-content: end;
@@ -90,4 +90,20 @@
     border: 1px solid black;
     padding: 30px 10px;
     border-radius: 4px;
+}
+
+
+.ventShow {
+    border-collapse: collapse;
+}
+
+.ventShow, .ventShow td, .ventShow th {
+    border: 1px solid;
+    padding: 15px 10px;
+}
+
+.venteBlock {
+    display: flex;
+     align-items: end; 
+    padding: 0 0 10px 0;
 }

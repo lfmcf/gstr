@@ -57,6 +57,8 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::get('/users/update/{id}', [UserController::class, 'edit'])->name('editUser');
     Route::post('/storeuser', [UserController::class, 'store'])->name('storeUser');
     Route::post('/updateuser', [UserController::class, 'update'])->name('updateUser');
+
+    Route::post('/getsituation', [DashbordController::class, 'situation'])->name('getsituation');
     // Route::get('/dashboard', function () {
     //     return Inertia::render('Dashboard');
     // })->middleware(['auth', 'verified'])->name('dashboard');
@@ -88,6 +90,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/vente/create', [VenteController::class, 'create'])->name("createVente");
     Route::post('/storevente', [VenteController::class, 'store'])->name("storevente");
     Route::get('/vente/update/{id}', [VenteController::class, 'edit'])->name('editVente');
+    Route::get('/vente/show/{id}', [VenteController::class, 'show'])->name('showVente');
     Route::post('/updateVente', [VenteController::class, 'update'])->name("updateVente");
     Route::get('/avance/{id}', [VenteController::class, 'getavance'])->name("avance");
     Route::post('/deleteVente', [VenteController::class, 'destroy'])->name("deleteVente");
