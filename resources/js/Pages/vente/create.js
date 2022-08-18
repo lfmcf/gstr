@@ -13,6 +13,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import TextField from '@mui/material/TextField';
 import Bread from '@/Components/Bread';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import moment from 'moment';
 
 const theme = createTheme({
   palette: {
@@ -112,6 +113,7 @@ export default function create(props) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        console.log(data.date)
         post(route('storevente'));
     }
 

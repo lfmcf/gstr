@@ -8,6 +8,8 @@ import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import {TableContainer, Table, TableBody, TableCell, TableRow, TableHead} from '@mui/material'
 import Bread from '@/Components/Bread';
+import SearchIcon from '@mui/icons-material/Search';
+import AddBoxIcon from '@mui/icons-material/AddBox';
 
 export default function index(props) {
 
@@ -17,8 +19,11 @@ export default function index(props) {
         Inertia.get(route('createVente'))
     }
 
-    const update = (row) => {
-        Inertia.get(route('editVente', { id: row.id}))
+    const update = (e, row) => {
+        e == "update" ?
+        Inertia.get(route('editVente', { id: row.id})) : 
+        e == "show" ? Inertia.get(route('showVente', { id: row.id})) : 
+        Inertia.get(route('avance', { id: row.id}))
     }
 
     const columns = [
@@ -33,23 +38,32 @@ export default function index(props) {
         },
         {
             name: "",
+            label: "Actions",
             options: {
                 customBodyRender: (value, tableMeta, updateValue) => {
                     const id = tableMeta.rowData[0];
                     let row;
-                    function search(id, data) {
+                    function search(e, id, data) {
                         for(var i = 0; i < data.length; i++){
                             if(data[i].id === id){
                                 row = data[i]
-                                // console.log(row)
-                                update(row);
+                                update(e, row);
                             }
                         }
                     }
                     return (
-                        <IconButton onClick={() => { search(id, vente) }}>
-                            <EditIcon />
-                        </IconButton>
+                        <>
+                            <IconButton onClick={() => { search("update", id, vente) }}>
+                                <EditIcon />
+                            </IconButton>
+                            <IconButton onClick={() => { search("show", id, vente) }}>
+                                <SearchIcon />
+                            </IconButton>
+                            <IconButton onClick={() => { search("avance", id, vente) }}>
+                                <AddBoxIcon />
+                            </IconButton>
+                        </>
+                        
                     );
                 }
             }
@@ -116,6 +130,14 @@ export default function index(props) {
                 useDisplayedRowsOnly: false
             }
         },
+        onRowsDelete: (rowsDeleted, dataRows) => {
+            const idsToDelete = rowsDeleted.data.map(d => vente[d.dataIndex].id);
+            const ids = {'ids': idsToDelete};
+            Inertia.post(route('deleteVente', ids));
+            // axios.post("/api/deleterowsfacture", ids).then(res => {
+            //     //console.log(res);
+            // });
+        },
         customToolbar: () => {
             return(
                 <CustomToolbar handleClick={handleNavigate} />
@@ -124,7 +146,7 @@ export default function index(props) {
         expandableRows: true,
         renderExpandableRow: (rowData, rowMeta) => {
             const dataValues = vente.find(x => x.id === rowData[0])
-            console.log(dataValues.produit)
+            
             return (
                 <>
                     <tr>
