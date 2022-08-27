@@ -10,6 +10,7 @@ import {TableContainer, Table, TableBody, TableCell, TableRow, TableHead} from '
 import Bread from '@/Components/Bread';
 import SearchIcon from '@mui/icons-material/Search';
 import AddBoxIcon from '@mui/icons-material/AddBox';
+import moment from 'moment';
 
 export default function index(props) {
 
@@ -77,6 +78,22 @@ export default function index(props) {
             }
         },
         {
+            name: 'produit',
+            label: 'Produit(s)',
+            options: {
+                filter: false,
+                filterType: 'multiselect',
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    console.log(value)
+                    
+                    const listItems = value.map( pro =>  <li>{pro.name}</li>)
+                    return(
+                        <ul>{listItems}</ul>
+                    )
+                }
+            }
+        },
+        {
             name:"vendeur",
             label: "Vendeur",
             options: {
@@ -114,6 +131,9 @@ export default function index(props) {
             options: {
                 filter: true,
                 filterType: 'multiselect',
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    return moment(value).format('DD/MM/yyyy')
+                }
             }
         },
     ]
