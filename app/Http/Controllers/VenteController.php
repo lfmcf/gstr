@@ -66,6 +66,7 @@ class VenteController extends Controller
         $vent->payment = $request->payment;
         $vent->avance = $request->avance;
         $vent->reste = $request->reste;
+        $vent->paye = $request->paye;
         $vent->observation = $request->observation;
         $vent->created_by = Auth::user()->id;
 
@@ -150,6 +151,7 @@ class VenteController extends Controller
         $vent->payment = $request->payment;
         $vent->avance = $request->avance;
         $vent->reste = $request->reste;
+        $vent->paye = $request->paye;
         $vent->observation = $request->observation;
         $vent->created_by = Auth::user()->id;
 

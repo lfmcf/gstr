@@ -14,6 +14,9 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import TextField from '@mui/material/TextField';
 import Bread from '@/Components/Bread';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Checkbox from '@mui/material/Checkbox';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 const theme = createTheme({
   palette: {
@@ -39,6 +42,7 @@ export default function edit(props) {
         tc: vente.tc,
         avance: vente.avance,
         reste: vente.reste,
+        paye: vente.paye,
         observation: vente.observation
     });
 
@@ -313,6 +317,11 @@ export default function edit(props) {
                     </Grid>
                     <Grid item md={6}>
                         <TextField name='reste' size="small" fullWidth label='Reste' value={data.reste} disabled />
+                    </Grid>
+                    <Grid item md={12}>
+                        <FormGroup>
+                            <FormControlLabel control={<Checkbox checked={data.paye} name="paye" color="success" onChange={(e) => setData('paye', e.target.checked)} />} label="Payé" />
+                        </FormGroup>
                     </Grid>
                     <Grid item md={12}>
                         <TextField name='observation' fullWidth label='Observation' onChange={handleChange} value={data.observation} />

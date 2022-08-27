@@ -24,21 +24,28 @@ class DashbordController extends Controller
                 ->orWhere(function($query){
                     $query->where('payment', 'Chèque');
                 })
-                ->where('reste', '>', '0')
+                ->where('paye', false)
                 ->get()
                 ->sortBy(['created_at', 'DESC']);
 
-        $clt = Vente::where("reste", '>', 0)->get();
+        $clt = Vente::where('paye', false)->get();
 
         $caise = Vente::all();
         $charge = Charge::all();
         //dd($caise);
         $total = 0;
-        // foreach ($caise as $cs) {
-        //     foreach($cs->avance['montant'] as $av) {
-        //         $total = $total + intval($av); 
-        //     }
-        // }
+        foreach ($caise as $cs) {
+            if($cs->paye){
+                foreach($cs->produit as $p) {
+                    $total = $total + intval($p['somme']); 
+                }
+            }else{
+                foreach($cs->avance as $av) {
+                    $total = $total + intval($av['montant']); 
+                }
+            }
+            
+        }
 
         foreach($charge as $ch) {
             $total = $total - $ch->montant;
