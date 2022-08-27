@@ -70,10 +70,11 @@ export default function create(props) {
                             <TextField variant="outlined" fullWidth size='small' label="Montant" name='montant' onChange={handleChange} />
                         </Grid>
                     </Grid>
+                    <ThemeProvider theme={theme}>
+                        <Button style={{ marginTop: '20px' }} color="neutral" type='submit' variant="contained">Ajouter</Button>
+                    </ThemeProvider>
                 </form>
-                <ThemeProvider theme={theme}>
-                    <Button style={{ marginTop: '20px' }} color="neutral" type='submit' variant="contained">Ajouter</Button>
-                </ThemeProvider>
+                
             </div>
         </Authenticated>
     )
