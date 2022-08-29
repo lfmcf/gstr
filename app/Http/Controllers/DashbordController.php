@@ -37,11 +37,11 @@ class DashbordController extends Controller
         foreach ($caise as $cs) {
             if($cs->paye){
                 foreach($cs->produit as $p) {
-                    $total = $total + intval($p['somme']); 
+                    $total += intval($p['somme']); 
                 }
             }else{
                 foreach($cs->avance as $av) {
-                    $total = $total + intval($av['montant']); 
+                    $total += intval($av['montant']); 
                 }
             }
             
@@ -54,7 +54,7 @@ class DashbordController extends Controller
         $from = date('Y-m-01');
         $to = date('Y-m-t');
         $situation = $this->getSituation($from, $to);
-        
+        // dd($situation);
         return Inertia::render('Dashboard', [
             'echeance' => $echeance,
             'cntpex' => $cntpex,
@@ -79,6 +79,23 @@ class DashbordController extends Controller
     {
         $situation = Vente::whereBetween('created_at', [$from, $to])
         ->get()->groupBy('produit.*.name');
+        //dd($situation);
+        foreach($situation as $key => $value) {
+            $name = explode(",", '05W40, 5L');
+            // dd($name);
+            if(count($name) > 1) {
+                $pro = InternProduct::where('productName', '=',  $name[0])
+                ->where('volume', trim($name[1]))->first();
+            }
+            else {
+                $pro = ExternProduct::where('productName', '=',  $name[0])->first();
+            }
+
+            foreach($situation[$key] as $si){
+                $si->prixAchat = $pro->price;
+            }
+        }
+        
         return $situation;
     }
 }

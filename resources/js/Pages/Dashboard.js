@@ -26,22 +26,25 @@ export default function Dashboard(props) {
             var arr = [];
             for (const key in res.data) {
                 var som = 0;
+                var prix = 0, quan = 0, beni = 0;
                 res.data[key].forEach(item => {
                     item.produit.forEach(element => {
                         if (element.name == key) {
                             som += parseInt(element.somme)
+                            prix += parseInt(element.prix)
+                            quan += parseInt(element.quantite)
+                           
                         }
+                        beni = som - (item.prixAchat * quan)
                     });
                 });
-                // console.log(props.situation[key][0])
-                //var prix = parseInt(props.situation[key][0].produit.prix_u[0]);
-
+               
                 arr.push({
                     'name': key,
                     'ventes': res.data[key].length,
                     'somme': som,
-                    'prix': 0,
-                    'benifice': 0
+                    'prix': prix,
+                    'benifice': quan
                 })
 
                 setSiarr(arr)
@@ -49,26 +52,36 @@ export default function Dashboard(props) {
         })
     }
 
+    
+
     React.useEffect(() => {
         var arr = [];
+        //console.log(props.situation)
         for (const key in props.situation) {
+            console.log(props.situation[key])
             var som = 0;
+            var prix = 0, quan = 0, beni = 0;
             props.situation[key].forEach(item => {
                 item.produit.forEach(element => {
                     if(element.name == key) {
                         som += parseInt(element.somme)
+                        prix += parseInt(element.prix)
+                        quan += parseInt(element.quantite)
+                        
                     }
+                    beni = som - (item.prixAchat * quan)
                 });
+                
             });
-            // console.log(props.situation[key][0])
-            //var prix = parseInt(props.situation[key][0].produit.prix_u[0]);
+            
+            
             
             arr.push({
                 'name': key,
                 'ventes': props.situation[key].length,
                 'somme': som,
-                'prix': 0,
-                'benifice': 0
+                'prix': prix,
+                'benifice': quan
             })
            
             setSiarr(arr)
@@ -259,7 +272,7 @@ export default function Dashboard(props) {
             }
         },
         {
-            name: "bon",
+            name: "prix",
             label: "Prix",
             options: {
                 filter: true,
@@ -267,7 +280,7 @@ export default function Dashboard(props) {
             }
         },
         {
-            name: "bon",
+            name: "benifice",
             label: "benifice",
             options: {
                 filter: true,
