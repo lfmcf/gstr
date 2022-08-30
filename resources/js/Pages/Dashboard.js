@@ -57,6 +57,7 @@ export default function Dashboard(props) {
     React.useEffect(() => {
         var arr = [];
         //console.log(props.situation)
+       
         for (const key in props.situation) {
             console.log(props.situation[key])
             var som = 0;
@@ -69,7 +70,7 @@ export default function Dashboard(props) {
                         quan += parseInt(element.quantite)
                         
                     }
-                    beni = som - (item.prixAchat * quan)
+                    beni = (item.prixAchat * quan) - som
                 });
                 
             });
@@ -78,10 +79,10 @@ export default function Dashboard(props) {
             
             arr.push({
                 'name': key,
-                'ventes': props.situation[key].length,
+                'ventes': quan,
                 'somme': som,
                 'prix': prix,
-                'benifice': quan
+                'benifice': beni
             })
            
             setSiarr(arr)
