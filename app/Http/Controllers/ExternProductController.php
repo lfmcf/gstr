@@ -94,8 +94,12 @@ class ExternProductController extends Controller
      * @param  \App\Models\ExternProduct  $externProduct
      * @return \Illuminate\Http\Response
      */
-    public function destroy(ExternProduct $externProduct)
+    public function destroy(Request $request)
     {
-        //
+        foreach($request->ids as $id) {
+            ExternProduct::find($id)->delete($id);
+        }
+
+        return redirect('exproduct');
     }
 }

@@ -99,6 +99,11 @@ export default function index(props) {
                 useDisplayedRowsOnly: false
             }
         },
+        onRowsDelete: (rowsDeleted, dataRows) => {
+            const idsToDelete = rowsDeleted.data.map(d => vendeur[d.dataIndex].id);
+            const ids = {'ids': idsToDelete};
+            Inertia.post(route('deleteSeller', ids));
+        },
         customToolbar: () => {
             return(
                 <CustomToolbar handleClick={handleNavigate} />

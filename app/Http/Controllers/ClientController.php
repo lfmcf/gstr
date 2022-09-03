@@ -99,5 +99,7 @@ class ClientController extends Controller
         foreach($request->ids as $id) {
             client::find($id)->delete($id);
         }
+
+        return redirect('client');
     }
 }

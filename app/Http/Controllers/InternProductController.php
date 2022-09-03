@@ -94,8 +94,11 @@ class InternProductController extends Controller
      * @param  \App\Models\InternProduct  $internProduct
      * @return \Illuminate\Http\Response
      */
-    public function destroy(InternProduct $internProduct)
+    public function destroy(Request $request)
     {
-        //
+        foreach($request->ids as $id) {
+            InternProduct::find($id)->delete($id);
+        }
+        return redirect('inproduct');
     }
 }

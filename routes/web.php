@@ -11,6 +11,8 @@ use App\Http\Controllers\InternProductController;
 use App\Http\Controllers\ExternProductController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VenteController;
+use App\Models\Charge;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -59,6 +61,7 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::post('/updateuser', [UserController::class, 'update'])->name('updateUser');
 
     Route::post('/getsituation', [DashbordController::class, 'situation'])->name('getsituation');
+    Route::post('/getsituationv', [DashbordController::class, 'situationv'])->name('getsituationv');
     // Route::get('/dashboard', function () {
     //     return Inertia::render('Dashboard');
     // })->middleware(['auth', 'verified'])->name('dashboard');
@@ -71,6 +74,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/storecharge', [ChargeController::class, 'store'])->name('storecharge');
     Route::get('/charge/update/{id}', [ChargeController::class, 'edit'])->name('editCharge');
     Route::post('/updateCharge', [ChargeController::class, 'update'])->name('updateCharge');
+    Route::post('deleteCharge', [ChargeController::class, 'destroy'])->name('deleteCharge');
 
     Route::get('/client', [ClientController::class, 'index']);
     Route::get('/client/create', [ClientController::class, 'create'])->name("createClient");

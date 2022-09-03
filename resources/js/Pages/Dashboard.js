@@ -14,17 +14,29 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import axios from 'axios';
+import Select from 'react-select';
 
 export default function Dashboard(props) {
 
     const [siarr, setSiarr] = useState([])
+    const [siarrv, setSiarrv] = useState([])
+    const [payment, setPayement] = useState('Tous')
     const [from, setFrom] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1 ));
     const [to, setTo] = useState(new Date());
+    const [fromv, setFromv] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1 ));
+    const [tov, setTov] = useState(new Date());
+
+    const handleSelectChange = (selectedOption, name) => {
+        setPayement(selectedOption.value)
+    }
 
     const handleClick = () => {
-        axios.post(route('getsituation'), { "from": from, 'to': to }).then(res => {
+       
+        axios.post(route('getsituation'), { "from": from, 'to': to, 'payment': payment }).then(res => {
+            console.log(res.data)
             var arr = [];
             for (const key in res.data) {
+                
                 var som = 0;
                 var prix = 0, quan = 0, beni = 0;
                 res.data[key].forEach(item => {
@@ -33,7 +45,6 @@ export default function Dashboard(props) {
                             som += parseInt(element.somme)
                             prix += parseInt(element.prix)
                             quan += parseInt(element.quantite)
-                           
                         }
                         beni = som - (item.prixAchat * quan)
                     });
@@ -41,41 +52,52 @@ export default function Dashboard(props) {
                
                 arr.push({
                     'name': key,
-                    'ventes': res.data[key].length,
+                    'ventes': quan,
                     'somme': som,
                     'prix': prix,
-                    'benifice': quan
+                    'benifice': beni
                 })
-
-                setSiarr(arr)
             }
+            setSiarr(arr)
+        })
+    }
+
+    const handleClickV = () => {
+        axios.post(route('getsituationv'), { "fromv": fromv, 'tov': tov }).then(res => {
+            var arr = [];
+            for (const key in res.data) {
+                arr.push({
+                    'name': key,
+                    'ventes': res.data[key].length,
+                    // 'somme': som,
+                    // 'prix': prix,
+                    // 'benifice': beni
+                })
+            }
+            setSiarrv(arr)
         })
     }
 
     
 
     React.useEffect(() => {
-        var arr = [];
-        //console.log(props.situation)
-       
+        var arr = [], arrv = [];
         for (const key in props.situation) {
-            console.log(props.situation[key])
             var som = 0;
             var prix = 0, quan = 0, beni = 0;
             props.situation[key].forEach(item => {
+                prix = parseInt(item.prixAchat)
                 item.produit.forEach(element => {
                     if(element.name == key) {
                         som += parseInt(element.somme)
-                        prix += parseInt(element.prix)
+                        
                         quan += parseInt(element.quantite)
                         
                     }
-                    beni = (item.prixAchat * quan) - som
+                    beni = som - (item.prixAchat * quan)
                 });
                 
             });
-            
-            
             
             arr.push({
                 'name': key,
@@ -84,9 +106,18 @@ export default function Dashboard(props) {
                 'prix': prix,
                 'benifice': beni
             })
-           
-            setSiarr(arr)
         }
+        setSiarr(arr)
+        for (const key in props.situationv) {
+            arrv.push({
+                'name': key,
+                'ventes': props.situationv[key].length,
+                // 'somme': som,
+                // 'prix': prix,
+                // 'benifice': beni
+            })
+        }
+        setSiarrv(arrv)
     }, []);
 
     const columns = [
@@ -355,7 +386,7 @@ export default function Dashboard(props) {
                     <Grid item md={12}>
                         <Typography style={{ marginBottom: '10px' }}>Situation Mensuelle</Typography>
                     </Grid>
-                    <Grid item md={5}>
+                    <Grid item md={3}>
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DatePicker
                                 label="Du"
@@ -363,6 +394,68 @@ export default function Dashboard(props) {
                                 inputFormat="dd/MM/yyyy"
                                 onChange={(newValue) => {
                                     setFrom(newValue);
+                                }}
+                                renderInput={(params) => <TextField size='small' {...params} fullWidth />}
+                                
+                            />
+                        </LocalizationProvider>
+                    </Grid>
+                    <Grid item md={3}>
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DatePicker
+                                label="Au"
+                                value={to}
+                                inputFormat="dd/MM/yyyy"
+                                onChange={(newValue) => {
+                                    setTo(newValue);
+                                }}
+                                renderInput={(params) => <TextField size='small' {...params} fullWidth />}
+                                
+                            />
+                        </LocalizationProvider>
+                    </Grid>
+                    <Grid item md={3}>
+                        <Select options={[
+                            { label: 'Tous', value: 'Tous' },
+                            { label: 'Traite', value: 'Traite' },
+                            { label: 'Chèque', value: 'Chèque' },
+                            { label: 'Crédit', value: 'Crédit' },
+                            { label: 'Espèce', value: 'Espèce' },
+                        ]}
+                            name='payment'
+                            placeholder='Payment'
+                            isClearable
+                            onChange={handleSelectChange}
+                            className="basic"
+                            classNamePrefix="basic"
+                            defaultValue={{label: payment, value: payment}}
+                        />
+                    </Grid>
+                    <Grid item md={2}>
+                        <div style={{height:'100%',display:'flex',alignItems:'center',justifyContent:'center'}}>
+                            <Button variant="outlined" onClick={handleClick}>Chercher</Button>
+                        </div>
+                    </Grid>
+                    <Grid item md={12}>
+                        <MUIDataTable
+                            data={siarr}
+                            columns={columnss}
+                            options={optionsc}
+                        />
+                    </Grid>
+                </Grid>
+                <Grid container spacing={2} style={{ marginTop:'10px', marginBottom:'10px' }}>
+                    <Grid item md={12}>
+                        <Typography style={{ marginBottom: '10px' }}>Situation Mensuelle par vendeur</Typography>
+                    </Grid>
+                    <Grid item md={5}>
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                            <DatePicker
+                                label="Du"
+                                value={fromv}
+                                inputFormat="dd/MM/yyyy"
+                                onChange={(newValue) => {
+                                    setFromv(newValue);
                                 }}
                                 renderInput={(params) => <TextField {...params} fullWidth />}
                                 
@@ -373,10 +466,10 @@ export default function Dashboard(props) {
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DatePicker
                                 label="Au"
-                                value={to}
+                                value={tov}
                                 inputFormat="dd/MM/yyyy"
                                 onChange={(newValue) => {
-                                    setTo(newValue);
+                                    setTov(newValue);
                                 }}
                                 renderInput={(params) => <TextField {...params} fullWidth />}
                                 
@@ -385,12 +478,12 @@ export default function Dashboard(props) {
                     </Grid>
                     <Grid item md={2}>
                         <div style={{height:'100%',display:'flex',alignItems:'center',justifyContent:'center'}}>
-                            <Button onClick={handleClick}>Chercher</Button>
+                            <Button variant="outlined" onClick={handleClickV}>Chercher</Button>
                         </div>
                     </Grid>
                     <Grid item md={12}>
                         <MUIDataTable
-                            data={siarr}
+                            data={siarrv}
                             columns={columnss}
                             options={optionsc}
                         />
