@@ -102,5 +102,7 @@ class ChargeController extends Controller
         foreach($request->ids as $id) {
             Charge::find($id)->delete($id);
         }
+
+        return redirect('charge');
     }
 }

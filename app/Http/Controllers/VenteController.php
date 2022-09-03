@@ -57,6 +57,19 @@ class VenteController extends Controller
      */
     public function store(Request $request)
     {
+        $validator = $request->validate(
+            [
+                'date' => 'required',
+                'vendeur' => 'required',
+                'client' => 'required',
+                'produit.*.name' => 'required',
+                'produit.*.quantite' => 'required',
+                'produit.*.prix' => 'required',
+                'payment' => 'required',
+                'avance.*.montant' => 'required'
+            ]
+            
+        );
         $vent = new Vente();
         $vent->bon = $request->bon;
         $vent->date = date('Y-m-d H:i:s', strtotime($request->date));
@@ -69,6 +82,26 @@ class VenteController extends Controller
         $vent->paye = $request->paye;
         $vent->observation = $request->observation;
         $vent->created_by = Auth::user()->id;
+
+        foreach($request->produit as $pro) {
+            
+            $name = explode(",", $pro['name']);
+            if(count($name) > 1) {
+                $product = InternProduct::where('productName', '=',  $name[0])
+                ->where('volume', trim($name[1]))->first();
+            }
+            else {
+                $product = ExternProduct::where('productName', '=',  $name[0])->first();
+            }
+            if($product->quantite < $pro['quantite']) {
+                return null;
+            } else {
+                $product->quantite = $product->quantite - $pro['quantite'];
+                $product->save();
+            }
+            
+        }
+        
 
         $docs = $request->tc;
 

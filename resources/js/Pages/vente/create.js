@@ -42,6 +42,13 @@ export default function create(props) {
         observation: ''
     });
 
+    const selectStyles = (hasErrors) => ({
+        control: (styles) => ({
+            ...styles,
+            ...(hasErrors && { borderColor: 'red' }),
+        }),
+    });
+
     let addProduitFields = () => {
         let newArr = { ...data };
         newArr.produit.push({ name: '', somme: '', prix: '', quantite: '' });
@@ -73,6 +80,7 @@ export default function create(props) {
     const handleSelectChange = (selectedOption, name) => {
         name.action == 'clear' ?
         setData(name.name, "") : setData(name.name, selectedOption.value);
+        clearErrors(name.name)
     }
 
     const handleProduitSelectChange = (selectedOption, name, i) => {
@@ -80,6 +88,7 @@ export default function create(props) {
         let newFormValues = { ...data };
         name.action == 'clear' ? newFormValues.produit[i][name.name] = "" :
         newFormValues.produit[i][name.name] = selectedOption.value;
+        clearErrors('produit.' + i + '.' + name.name)
         setData(newFormValues);
     }
 
@@ -88,6 +97,7 @@ export default function create(props) {
         newFormValues.produit[i][e.target.name] = e.target.value;
         e.target.name === 'prix' || e.target.name === 'quantite' ? 
         newFormValues.produit[i]['somme'] = newFormValues.produit[i]['prix'] * newFormValues.produit[i]['quantite'] : ''
+        clearErrors('produit.' + i + '.' + e.target.name)
         setData(newFormValues);
     }
 
@@ -141,6 +151,8 @@ export default function create(props) {
         setData('reste', data.produit.reduce((a, o) => {return a + o.somme},0) - data.avance[0].montant)
     }, [data.avance[0].montant])
 
+    console.log(errors)
+
     return (
         <Authenticated
             auth={props.auth}
@@ -176,6 +188,7 @@ export default function create(props) {
                             placeholder='Vendeur'
                             isClearable
                             onChange={handleSelectChange}
+                            styles={selectStyles(errors.vendeur)}
                             className="basic"
                             classNamePrefix="basic"
                         />
@@ -186,6 +199,7 @@ export default function create(props) {
                             placeholder='Client'
                             isClearable
                             onChange={handleSelectChange}
+                            styles={selectStyles(errors.client)}
                             className="basic"
                             classNamePrefix="basic"
                         />
@@ -218,12 +232,22 @@ export default function create(props) {
                                             placeholder='Nom produit'
                                             isClearable
                                             onChange={(selectedOption, name) => handleProduitSelectChange(selectedOption, name, index)}
+                                            styles={selectStyles(errors['produit.' + index + '.name'])}
                                             className="basic"
                                             classNamePrefix="basic"
+                                            inp
                                         />
                                     </Grid>
                                     <Grid item md={6}>
-                                        <TextField size="small" type="number" name='quantite' fullWidth label="Quantité" onChange={e => handleProduitChange(index, e)} />
+                                        <TextField size="small" 
+                                            type="number" 
+                                            name='quantite' 
+                                            fullWidth 
+                                            label="Quantité" 
+                                            onChange={e => handleProduitChange(index, e)} 
+                                            style={{}}
+                                            inputProps={{ style: { borderColor :'red'}}}
+                                        />
                                     </Grid>
                                     <Grid item md={6}>
                                         <TextField size="small" type="number" name='prix' fullWidth label="Prix" onChange={e => handleProduitChange(index, e)} />
@@ -253,6 +277,7 @@ export default function create(props) {
                             onChange={handleSelectChange}
                             className="basic"
                             classNamePrefix="basic"
+                            styles={selectStyles(errors.vendeur)}
                         />
                     </Grid>
                 </Grid>

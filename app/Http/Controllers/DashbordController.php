@@ -11,6 +11,8 @@ use App\Models\Vente;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
+use function PHPUnit\Framework\isNull;
+
 class DashbordController extends Controller
 {
     public function index()
@@ -53,8 +55,8 @@ class DashbordController extends Controller
 
         $from = date('Y-m-01');
         $to = date('Y-m-t');
-        $situation = $this->getSituation($from, $to);
-        // dd($situation);
+        $situation = $this->getSituation($from, $to, 'Tous');
+        $situationv = $this->getSituationven($from, $to);
         return Inertia::render('Dashboard', [
             'echeance' => $echeance,
             'cntpex' => $cntpex,
@@ -64,6 +66,7 @@ class DashbordController extends Controller
             'clt' => $clt,
             'total' => $total,
             'situation' => $situation,
+            'situationv' => $situationv,
         ]);
         
         // return view('dashboard', compact('echeance', 'cntpex', 'cntpin', 'clits', 'vnts', 'clt', 'total', 'situation'));
@@ -71,18 +74,46 @@ class DashbordController extends Controller
 
     public function situation(Request $request) {
        
-       $situation = $this->getSituation(date("y-m-d", strtotime($request->from)), date("y-m-d", strtotime($request->to)));
+       $situation = $this->getSituation(date("y-m-d", strtotime($request->from)), date("y-m-d", strtotime($request->to)), $request->payment);
        return response()->json($situation);
     }
 
-    public function getSituation($from, $to) 
+    public function situationv(Request $request) {
+        
+        $situationv = $this->getSituationven(date("y-m-d", strtotime($request->fromv)), date("y-m-d", strtotime($request->tov)));
+        return response()->json($situationv);
+     }
+
+    public function getSituation($from, $to, $pay) 
     {
-        $situation = Vente::whereBetween('created_at', [$from, $to])
-        ->get()->groupBy('produit.*.name');
-        //dd($situation);
+        
+        if($pay == 'Tous'|| $pay == '') {
+            $situation = Vente::whereBetween('created_at', [$from, $to])
+            ->get()->groupBy('produit.*.name');
+        }elseif($pay == 'Traite') {
+            
+            $situation = Vente::whereBetween('created_at', [$from, $to])
+            ->where('payment', '=', 'Traite')
+            ->get()->groupBy('produit.*.name');
+        }
+        elseif($pay == 'Chèque') {
+            $situation = Vente::whereBetween('created_at', [$from, $to])
+            ->where('payment', $pay)
+            ->get()->groupBy('produit.*.name');
+        }elseif($pay == 'Crédit') {
+            $situation = Vente::whereBetween('created_at', [$from, $to])
+            ->where('payment', $pay)
+            ->get()->groupBy('produit.*.name');
+        }elseif($pay == 'Espèce') {
+            $situation = Vente::whereBetween('created_at', [$from, $to])
+            ->where('payment', $pay)
+            ->get()->groupBy('produit.*.name');
+        }
+       
+        
         foreach($situation as $key => $value) {
-            $name = explode(",", '05W40, 5L');
-            // dd($name);
+            $name = explode(",", $key);
+            
             if(count($name) > 1) {
                 $pro = InternProduct::where('productName', '=',  $name[0])
                 ->where('volume', trim($name[1]))->first();
@@ -97,5 +128,13 @@ class DashbordController extends Controller
         }
         
         return $situation;
+    }
+
+    public function getSituationven($from, $to) 
+    {
+       
+        $situationve = Vente::whereBetween('created_at', [$from, $to])
+        ->get()->groupBy('vendeur');
+        return $situationve;
     }
 }

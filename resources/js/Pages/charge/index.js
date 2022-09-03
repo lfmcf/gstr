@@ -93,6 +93,11 @@ export default function index(props) {
                 useDisplayedRowsOnly: false
             }
         },
+        onRowsDelete: (rowsDeleted, dataRows) => {
+            const idsToDelete = rowsDeleted.data.map(d => charge[d.dataIndex].id);
+            const ids = {'ids': idsToDelete};
+            Inertia.post(route('deleteCharge', ids));
+        },
         customToolbar: () => {
             return(
                 <CustomToolbar handleClick={handleNavigate} />

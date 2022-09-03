@@ -94,8 +94,11 @@ class SellerController extends Controller
      * @param  \App\Models\Seller  $seller
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Seller $seller)
+    public function destroy(Request $request)
     {
-        //
+        foreach($request->ids as $id) {
+            Seller::find($id)->delete($id);
+        }
+        return redirect('vendeur');
     }
 }
