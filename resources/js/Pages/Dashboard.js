@@ -33,20 +33,21 @@ export default function Dashboard(props) {
     const handleClick = () => {
        
         axios.post(route('getsituation'), { "from": from, 'to': to, 'payment': payment }).then(res => {
-            console.log(res.data)
+            
             var arr = [];
             for (const key in res.data) {
                 
                 var som = 0;
                 var prix = 0, quan = 0, beni = 0;
                 res.data[key].forEach(item => {
+                    
                     item.produit.forEach(element => {
                         if (element.name == key) {
                             som += parseInt(element.somme)
-                            prix += parseInt(element.prix)
+                            prix = element.prixAchat
                             quan += parseInt(element.quantite)
                         }
-                        beni = som - (item.prixAchat * quan)
+                        beni = som - (prix * quan)
                     });
                 });
                
@@ -86,15 +87,15 @@ export default function Dashboard(props) {
             var som = 0;
             var prix = 0, quan = 0, beni = 0;
             props.situation[key].forEach(item => {
-                prix = parseInt(item.prixAchat)
+                
                 item.produit.forEach(element => {
                     if(element.name == key) {
                         som += parseInt(element.somme)
-                        
+                        prix = element.prixAchat
                         quan += parseInt(element.quantite)
                         
                     }
-                    beni = som - (item.prixAchat * quan)
+                    beni = som - (prix * quan)
                 });
                 
             });
@@ -108,6 +109,7 @@ export default function Dashboard(props) {
             })
         }
         setSiarr(arr)
+        
         for (const key in props.situationv) {
             arrv.push({
                 'name': key,
@@ -305,7 +307,7 @@ export default function Dashboard(props) {
         },
         {
             name: "prix",
-            label: "Prix",
+            label: "Prix d'achat",
             options: {
                 filter: true,
                 filterType: 'multiselect',
@@ -314,6 +316,87 @@ export default function Dashboard(props) {
         {
             name: "benifice",
             label: "benifice",
+            options: {
+                filter: true,
+                filterType: 'multiselect',
+            }
+        },
+    ]
+
+    const optionv = {
+        rowsPerPageOptions: [5,10,15, 50, 100],
+        rowsPerPage: 5,
+        responsive: 'vertical',
+        enableNestedDataAccess: '.',
+        downloadOptions: {
+            separator: ";",
+            filterOptions: {
+                useDisplayedColumnsOnly: false,
+                useDisplayedRowsOnly: false
+            }
+        },
+        expandableRows: true,
+        renderExpandableRow: (rowData, rowMeta) => {
+            var name = rowData[1]
+            console.log(props.situationv[name])
+            return (
+                <>
+                <tr>
+                    <td colSpan={7}>
+                        <TableContainer>
+                            <Table aria-label="simple table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Nom</TableCell>
+                                        <TableCell>Quantité</TableCell>
+                                        <TableCell>Somme</TableCell>
+                                        <TableCell>Prix de vente</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {props.situationv[name].map((pro) => (
+                                        pro.produit.map(p => (
+                                            <TableRow >
+                                                <TableCell component="th" scope="row">{p.name}</TableCell>
+                                                <TableCell component="th" scope="row">{p.quantite}</TableCell>
+                                                <TableCell component="th" scope="row">{p.somme}</TableCell>
+                                                <TableCell component="th" scope="row">{p.prix}</TableCell>
+                                            </TableRow>
+                                        ))
+                                    ))
+                                    }
+                                   
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </td>
+                </tr>
+                </>
+            )
+        }
+    }
+
+    const columnv = [
+        {
+            name: 'id',
+            options: {
+                display: false,
+                filter: false,
+                viewColumns: false,
+                sort: true,
+            }
+        },
+        {
+            name: "name",
+            label: "Nom",
+            options: {
+                filter: true,
+                filterType: 'multiselect',
+            }
+        },
+        {
+            name: "ventes",
+            label: "Ventes",
             options: {
                 filter: true,
                 filterType: 'multiselect',
@@ -457,7 +540,7 @@ export default function Dashboard(props) {
                                 onChange={(newValue) => {
                                     setFromv(newValue);
                                 }}
-                                renderInput={(params) => <TextField {...params} fullWidth />}
+                                renderInput={(params) => <TextField size='small' {...params} fullWidth />}
                                 
                             />
                         </LocalizationProvider>
@@ -471,7 +554,7 @@ export default function Dashboard(props) {
                                 onChange={(newValue) => {
                                     setTov(newValue);
                                 }}
-                                renderInput={(params) => <TextField {...params} fullWidth />}
+                                renderInput={(params) => <TextField size='small' {...params} fullWidth />}
                                 
                             />
                         </LocalizationProvider>
@@ -484,8 +567,8 @@ export default function Dashboard(props) {
                     <Grid item md={12}>
                         <MUIDataTable
                             data={siarrv}
-                            columns={columnss}
-                            options={optionsc}
+                            columns={columnv}
+                            options={optionv}
                         />
                     </Grid>
                 </Grid>

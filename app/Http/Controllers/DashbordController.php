@@ -54,7 +54,8 @@ class DashbordController extends Controller
         }
 
         $from = date('Y-m-01');
-        $to = date('Y-m-t');
+        $to = date('Y-m-d');
+        
         $situation = $this->getSituation($from, $to, 'Tous');
         $situationv = $this->getSituationven($from, $to);
         return Inertia::render('Dashboard', [
@@ -88,53 +89,91 @@ class DashbordController extends Controller
     {
         
         if($pay == 'Tous'|| $pay == '') {
-            $situation = Vente::whereBetween('created_at', [$from, $to])
+            $situation = Vente::whereBetween('date', [$from, $to])
             ->get()->groupBy('produit.*.name');
         }elseif($pay == 'Traite') {
             
-            $situation = Vente::whereBetween('created_at', [$from, $to])
+            $situation = Vente::whereBetween('date', [$from, $to])
             ->where('payment', '=', 'Traite')
             ->get()->groupBy('produit.*.name');
         }
         elseif($pay == 'Chèque') {
-            $situation = Vente::whereBetween('created_at', [$from, $to])
+            $situation = Vente::whereBetween('date', [$from, $to])
             ->where('payment', $pay)
             ->get()->groupBy('produit.*.name');
         }elseif($pay == 'Crédit') {
-            $situation = Vente::whereBetween('created_at', [$from, $to])
+            $situation = Vente::whereBetween('date', [$from, $to])
             ->where('payment', $pay)
             ->get()->groupBy('produit.*.name');
         }elseif($pay == 'Espèce') {
-            $situation = Vente::whereBetween('created_at', [$from, $to])
+            $situation = Vente::whereBetween('date', [$from, $to])
             ->where('payment', $pay)
             ->get()->groupBy('produit.*.name');
         }
        
-        
         foreach($situation as $key => $value) {
-            $name = explode(",", $key);
             
-            if(count($name) > 1) {
-                $pro = InternProduct::where('productName', '=',  $name[0])
-                ->where('volume', trim($name[1]))->first();
-            }
-            else {
-                $pro = ExternProduct::where('productName', '=',  $name[0])->first();
+            foreach($situation[$key] as $si){
+                $arr = [];
+                foreach($si->produit as $p) {
+                    
+                    $name = explode(",", $p['name']);
+                    if (count($name) > 1) {
+                        $pro = InternProduct::where('productName', '=',  $name[0])
+                            ->where('volume', trim($name[1]))->first();
+                    } else {
+                        $pro = ExternProduct::where('productName', '=',  $name[0])->first();
+                    }
+                   
+                    $p['prixAchat'] = $pro->price;
+                    array_push($arr, $p);
+                }
+                $si->produit = $arr;
             }
 
-            foreach($situation[$key] as $si){
-                $si->prixAchat = $pro->price;
-            }
+            // $name = explode(",", $key);
+            
+            // if(count($name) > 1) {
+            //     $pro = InternProduct::where('productName', '=',  $name[0])
+            //     ->where('volume', trim($name[1]))->first();
+            // }
+            // else {
+            //     $pro = ExternProduct::where('productName', '=',  $name[0])->first();
+            // }
+
+            // foreach($situation[$key] as $si){
+            //     $si->prixAchat = $pro->price;
+            // }
         }
-        
+       
         return $situation;
     }
 
     public function getSituationven($from, $to) 
     {
-       
-        $situationve = Vente::whereBetween('created_at', [$from, $to])
+        $situationve = Vente::whereBetween('date', [$from, $to])
         ->get()->groupBy('vendeur');
+
+        foreach($situationve as $key => $value) {
+            
+            foreach($situationve[$key] as $si){
+                $arr = [];
+                foreach($si->produit as $p) {
+                    
+                    $name = explode(",", $p['name']);
+                    if (count($name) > 1) {
+                        $pro = InternProduct::where('productName', '=',  $name[0])
+                            ->where('volume', trim($name[1]))->first();
+                    } else {
+                        $pro = ExternProduct::where('productName', '=',  $name[0])->first();
+                    }
+                   
+                    $p['prixAchat'] = $pro->price;
+                    array_push($arr, $p);
+                }
+                $si->produit = $arr;
+            }
+        }
         return $situationve;
     }
 }
