@@ -33,11 +33,13 @@ use App\Models\Charge;
 //     ]);
 // });
 
+
+
 Route::middleware(['auth', 'verified', 'admin'])->group(function () {
 
-    Route::get('/dashboard', [DashbordController::class, 'index']);
+    // Route::get('/dashboard', [DashbordController::class, 'index']);
 
-    Route::get('/', [DashbordController::class, 'index']);
+    // Route::get('/', [DashbordController::class, 'index']);
 
     Route::get('/inproduct', [InternProductController::class, 'index']);
     Route::get('/inproduct/create', [InternProductController::class, 'create'])->name("createInProduct");
@@ -60,7 +62,7 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::post('/storeuser', [UserController::class, 'store'])->name('storeUser');
     Route::post('/updateuser', [UserController::class, 'update'])->name('updateUser');
 
-    Route::post('/getsituation', [DashbordController::class, 'situation'])->name('getsituation');
+    // Route::post('/getsituation', [DashbordController::class, 'situation'])->name('getsituation');
     Route::post('/getsituationv', [DashbordController::class, 'situationv'])->name('getsituationv');
     // Route::get('/dashboard', function () {
     //     return Inertia::render('Dashboard');
@@ -69,6 +71,11 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
+    
+Route::get('/dashboard', [DashbordController::class, 'index']);
+Route::get('/', [DashbordController::class, 'index']);
+Route::post('/getsituation', [DashbordController::class, 'situation'])->name('getsituation');
+
     Route::get('/charge', [ChargeController::class, 'index']);
     Route::get('/charge/create', [ChargeController::class, 'create'])->name("createCharge");
     Route::post('/storecharge', [ChargeController::class, 'store'])->name('storecharge');

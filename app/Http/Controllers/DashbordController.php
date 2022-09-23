@@ -10,6 +10,8 @@ use App\Models\InternProduct;
 use App\Models\Vente;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
+
 
 use function PHPUnit\Framework\isNull;
 
@@ -17,6 +19,7 @@ class DashbordController extends Controller
 {
     public function index()
     {
+
         $cntpex = ExternProduct::count();
         $cntpin = InternProduct::count();
         $clits = client::count();
@@ -34,7 +37,7 @@ class DashbordController extends Controller
 
         $caise = Vente::all();
         $charge = Charge::all();
-        //dd($caise);
+       
         $total = 0;
         foreach ($caise as $cs) {
             if($cs->paye){
@@ -55,20 +58,34 @@ class DashbordController extends Controller
 
         $from = date('Y-m-01');
         $to = date('Y-m-d');
-        
         $situation = $this->getSituation($from, $to, 'Tous');
-        $situationv = $this->getSituationven($from, $to);
-        return Inertia::render('Dashboard', [
-            'echeance' => $echeance,
-            'cntpex' => $cntpex,
-            'cntpin' => $cntpin,
-            'clits' => $clits,
-            'vnts' => $vnts,
-            'clt' => $clt,
-            'total' => $total,
-            'situation' => $situation,
-            'situationv' => $situationv,
-        ]);
+
+        if(Auth::user()->role == "admin") {
+            
+            $situationv = $this->getSituationven($from, $to);
+            return Inertia::render('Dashboard', [
+                'echeance' => $echeance,
+                'cntpex' => $cntpex,
+                'cntpin' => $cntpin,
+                'clits' => $clits,
+                'vnts' => $vnts,
+                'clt' => $clt,
+                'total' => $total,
+                'situation' => $situation,
+                'situationv' => $situationv,
+            ]);
+        }else {
+            return Inertia::render('UserDash', [
+                'vnts' => $vnts,
+                'cntpex' => $cntpex,
+                'cntpin' => $cntpin,
+                'clits' => $clits,
+                'total' => $total,
+                'situation' => $situation,
+            ]);
+        }
+        
+       
         
         // return view('dashboard', compact('echeance', 'cntpex', 'cntpin', 'clits', 'vnts', 'clt', 'total', 'situation'));
     }

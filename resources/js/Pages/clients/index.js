@@ -7,10 +7,39 @@ import { Inertia } from '@inertiajs/inertia';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import Bread from '@/Components/Bread';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Button from '@mui/material/Button';
+import { usePage } from '@inertiajs/inertia-react';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 export default function index(props) {
 
     const { client } = props;
+    const [open, setOpen] = React.useState(false);
+    const [openAlert, setOpenAlert] = React.useState(false);
+    const [ids, setIds] = React.useState();
+    const { flash } = usePage().props;
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleCloseAlert = () => {
+        setOpenAlert(false)
+    }
 
     const handleNavigate = () => {
         Inertia.get(route('createClient'))
@@ -19,6 +48,10 @@ export default function index(props) {
     const update = (row) => {
         Inertia.get(route('editClient', { id: row.id}))
     }
+
+    React.useEffect(() => {
+        flash.message ? setOpenAlert(true) : setOpenAlert(false)
+    }, []);
 
     const columns = [
         {
@@ -120,13 +153,20 @@ export default function index(props) {
         onRowsDelete: (rowsDeleted, dataRows) => {
             const idsToDelete = rowsDeleted.data.map(d => client[d.dataIndex].id);
             const ids = {'ids': idsToDelete};
-            Inertia.post(route('deleteClient', ids));
+            setIds(ids)
+            handleClickOpen()
+            // Inertia.post(route('deleteClient', ids));
         },
         customToolbar: () => {
             return(
                 <CustomToolbar handleClick={handleNavigate} />
             )
         }
+    }
+
+    const handleDelete = () => {
+        Inertia.post(route('deleteClient', ids));
+        setOpen(false)
     }
 
 
@@ -145,6 +185,38 @@ export default function index(props) {
                     options={options}
                 />
             </div>
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"Confirmer suppression"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Voulez vous vraiment suprimer les éléments selectionner ?
+                        si oui cliquer sur Confirmer ou Anunuler pour anuuler la suppression
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Anunuler</Button>
+                    <Button onClick={() => handleDelete()} autoFocus>
+                        Confirmer
+                    </Button>
+                </DialogActions>
+            </Dialog>
+            <Snackbar
+                open={openAlert}
+                autoHideDuration={6000}
+                onClose={handleCloseAlert}
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            >
+                <Alert onClose={handleCloseAlert} severity="success">
+                    {flash.message}
+                </Alert>
+            </Snackbar>
         </Authenticated>
     )
 }

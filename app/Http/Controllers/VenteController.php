@@ -57,13 +57,35 @@ class VenteController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = $request->validate(
+        $this->validate(request(),
             [
                 'date' => 'required',
                 'vendeur' => 'required',
                 'client' => 'required',
                 'produit.*.name' => 'required',
-                'produit.*.quantite' => 'required',
+                'produit.*.quantite' => [function ($attribute, $value, $fail) {
+
+                    if (!$value) {
+                        $fail(' ');
+                    }
+                    $nom = explode(".", $attribute);
+                    $pro = request()->produit[$nom[1]];
+                    
+                    if($pro['name']) {
+                        $name = explode(",", $pro['name']);
+                        if (count($name) > 1) {
+                            $product = InternProduct::where('productName', '=',  $name[0])
+                            ->where('volume', trim($name[1]))->first();
+                        } else {
+                            $product = ExternProduct::where('productName', '=',  $name[0])->first();
+                        }
+                        $check = $product->quantite < $value ? true : false;
+    
+                        if ($check) {
+                            $fail('la quantité de produit est supérieure à celle du stock'); // error massage
+                        }
+                    }
+                  }],
                 'produit.*.prix' => 'required',
                 'payment' => 'required',
                 'avance.*.montant' => 'required'
@@ -83,24 +105,24 @@ class VenteController extends Controller
         $vent->observation = $request->observation;
         $vent->created_by = Auth::user()->id;
 
-        foreach($request->produit as $pro) {
+        // foreach($request->produit as $pro) {
             
-            $name = explode(",", $pro['name']);
-            if(count($name) > 1) {
-                $product = InternProduct::where('productName', '=',  $name[0])
-                ->where('volume', trim($name[1]))->first();
-            }
-            else {
-                $product = ExternProduct::where('productName', '=',  $name[0])->first();
-            }
-            if($product->quantite < $pro['quantite']) {
-                return null;
-            } else {
-                $product->quantite = $product->quantite - $pro['quantite'];
-                $product->save();
-            }
+        //     $name = explode(",", $pro['name']);
+        //     if(count($name) > 1) {
+        //         $product = InternProduct::where('productName', '=',  $name[0])
+        //         ->where('volume', trim($name[1]))->first();
+        //     }
+        //     else {
+        //         $product = ExternProduct::where('productName', '=',  $name[0])->first();
+        //     }
+        //     if($product->quantite < $pro['quantite']) {
+        //         return back()->with('message', 'la quantité de produit' . $product->name . 'sélectionnée est supérieure à celle du stock');
+        //     } else {
+        //         $product->quantite = $product->quantite - $pro['quantite'];
+        //         $product->save();
+        //     }
             
-        }
+        // }
         
 
         $docs = $request->tc;
@@ -125,7 +147,7 @@ class VenteController extends Controller
         $vent->tc = $docs;
         
         $vent->save();
-        return redirect('vente');
+        return redirect('vente')->with('message', 'Vente ajouté avec success');
     }
 
     /**
@@ -224,8 +246,8 @@ class VenteController extends Controller
         foreach($request->ids as $id) {
             Vente::find($id)->delete($id);
         }
-
-        return redirect('vente');
+        
+        return redirect('vente')->with('message', 'suppression avec success');
     }
 
     public function getavance(Request $request) 

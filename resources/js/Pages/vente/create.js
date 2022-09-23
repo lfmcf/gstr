@@ -10,12 +10,16 @@ import IconButton from '@mui/material/IconButton';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import TextField from '@mui/material/TextField';
+import TextField, { TextFieldProps } from '@mui/material/TextField';
 import Bread from '@/Components/Bread';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Checkbox from '@mui/material/Checkbox';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import { usePage } from '@inertiajs/inertia-react';
+import Snackbar from '@mui/material/Snackbar';
+import CloseIcon from '@mui/icons-material/Close';
+import { alpha, styled } from '@mui/material/styles';
 
 const theme = createTheme({
   palette: {
@@ -25,6 +29,7 @@ const theme = createTheme({
     },
   },
 });
+
 
 export default function create(props) {
     
@@ -41,6 +46,13 @@ export default function create(props) {
         paye: false,
         observation: ''
     });
+
+    const [open, setOpen] = React.useState(false);
+    const { flash } = usePage().props
+   
+    React.useEffect(() => {
+        flash.message ? setOpen(true) : setOpen(false)
+    }, [])
 
     const selectStyles = (hasErrors) => ({
         control: (styles) => ({
@@ -126,7 +138,6 @@ export default function create(props) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(data.date)
         post(route('storevente'));
     }
 
@@ -151,7 +162,25 @@ export default function create(props) {
         setData('reste', data.produit.reduce((a, o) => {return a + o.somme},0) - data.avance[0].montant)
     }, [data.avance[0].montant])
 
-    console.log(errors)
+    const action = (
+        <React.Fragment>
+          <Button color="secondary" size="small" onClick={handleClose}>
+            UNDO
+          </Button>
+          <IconButton
+            size="small"
+            aria-label="close"
+            color="inherit"
+            onClick={handleClose}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        </React.Fragment>
+    );
+
+    const handleClose = () => {
+        setOpen(false);
+    };
 
     return (
         <Authenticated
@@ -237,6 +266,7 @@ export default function create(props) {
                                             classNamePrefix="basic"
                                             inp
                                         />
+                                        
                                     </Grid>
                                     <Grid item md={6}>
                                         <TextField size="small" 
@@ -245,12 +275,14 @@ export default function create(props) {
                                             fullWidth 
                                             label="Quantité" 
                                             onChange={e => handleProduitChange(index, e)} 
-                                            style={{}}
-                                            inputProps={{ style: { borderColor :'red'}}}
+                                            error = {errors['produit.' + index + '.quantite'] ? true : false }
                                         />
+                                        <div>
+                                            <p style={{color:'red'}}>{errors['produit.' + index + '.quantite']}</p>
+                                        </div>
                                     </Grid>
                                     <Grid item md={6}>
-                                        <TextField size="small" type="number" name='prix' fullWidth label="Prix" onChange={e => handleProduitChange(index, e)} />
+                                        <TextField size="small" type="number" name='prix' fullWidth label="Prix" onChange={e => handleProduitChange(index, e)} error = {errors['produit.' + index + '.prix'] ? true : false } />
                                     </Grid>
                                     <Grid item md={6}>
                                         <TextField size="small" name='somme' fullWidth label="Somme" value={element.somme} disabled />
@@ -277,7 +309,7 @@ export default function create(props) {
                             onChange={handleSelectChange}
                             className="basic"
                             classNamePrefix="basic"
-                            styles={selectStyles(errors.vendeur)}
+                            styles={selectStyles(errors.payment)}
                         />
                     </Grid>
                 </Grid>
@@ -348,7 +380,13 @@ export default function create(props) {
                     <Button style={{ marginTop: '20px' }} color="neutral" type='submit' variant="contained">Ajouter</Button>
                 </ThemeProvider>
             </form>
-
+            <Snackbar
+                open={open}
+                autoHideDuration={6000}
+                onClose={handleClose}
+                message={flash.message}
+                action={action}
+            />
         </Authenticated>
     )
 }
