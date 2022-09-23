@@ -70,11 +70,11 @@ export default function Authenticated({ auth, header, children }) {
                     <Typography variant="h4" component="h2" className='logoTitle'>Sky</Typography>
                 </div>
                 <ul>
-                    {auth.user.role === 'admin' ?
+                    {/* {auth.user.role === 'admin' ? */}
                     <li>
                         <a href="/">Dashboard</a>
                     </li>
-                    : ''}
+                    {/* // : ''} */}
                     <li>
                         <a href="/client">Client</a>
                     </li>

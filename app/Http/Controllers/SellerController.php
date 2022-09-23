@@ -42,7 +42,7 @@ class SellerController extends Controller
     public function store(Request $request)
     {
         Seller::create($request->all());
-        return redirect('vendeur');
+        return redirect('vendeur')->with('message', 'Vendeur ajouté avec success');
     }
 
     /**

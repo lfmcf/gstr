@@ -46,7 +46,7 @@ class ChargeController extends Controller
         $charge->montant = $request->montant;
         $charge->created_by = Auth::user()->id;
         $charge->save();
-        return redirect('charge');
+        return redirect('charge')->with('message', 'Charge ajouté avec success');
     }
 
     /**
