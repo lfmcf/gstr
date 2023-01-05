@@ -7,6 +7,7 @@ import { Inertia } from '@inertiajs/inertia';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import Bread from '@/Components/Bread';
+import moment from 'moment';
 
 export default function index(props) {
 
@@ -86,11 +87,30 @@ export default function index(props) {
             }
         },
         {
+            name:"quantiteI",
+            label: "Quantité initial",
+            options: {
+                filter: true,
+                filterType: 'multiselect',
+            }
+        },
+        {
             name:"quantite",
             label: "Quantité",
             options: {
                 filter: true,
                 filterType: 'multiselect',
+            }
+        },
+        {
+            name:"date",
+            label: "Date d'ajout",
+            options: {
+                filter: true,
+                filterType: 'multiselect',
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    return moment(value).format('DD/MM/yyyy')
+                }
             }
         },
     ]

@@ -8,6 +8,10 @@ import Button from '@mui/material/Button';
 import Bread from '@/Components/Bread';
 import TextField from '@mui/material/TextField';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import moment from 'moment';
 
 const theme = createTheme({
   palette: {
@@ -19,13 +23,16 @@ const theme = createTheme({
 });
 
 export default function create(props) {
+    
     const { data, setData, post, processing, errors, clearErrors, reset } = useForm({
         productName: '',
         reference: '',
         volume: '',
         price: '',
         quantite: '',
-        created_by: ''
+        quantiteI: '',
+        created_by: props.auth.user.id,
+        date: moment(new Date()).format('YYYY-MM-DD HH:mm:ss')
     })
 
     const handleChange = (e) => {
@@ -36,6 +43,10 @@ export default function create(props) {
         e.preventDefault();
         post(route('storeinproduct'));
     }
+
+    React.useEffect(() => {
+        setData('quantiteI', data.quantite)
+    },[data.quantite])
 
     return (
         <Authenticated
@@ -62,6 +73,21 @@ export default function create(props) {
                         </Grid>
                         <Grid item md={6}>
                             <TextField variant="outlined" fullWidth size='small' label="Quantité" name='quantite' onChange={handleChange} />
+                        </Grid>
+                        {/* <TextField variant="outlined" style={{display:'none'}}  size='small' name='quantiteI' value={data.quantite} onChange={handleChange} /> */}
+                        <Grid item md={6}>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <DatePicker
+                                    label="Date"
+                                    value={data.date}
+                                    inputFormat="dd/MM/yyyy"
+                                    onChange={(newValue) => {
+                                        setData('date',  moment(newValue).format('YYYY-MM-DD HH:mm:ss'));
+                                    }}
+                                    renderInput={(params) => <TextField size="small" {...params} fullWidth />}
+
+                                />
+                            </LocalizationProvider>
                         </Grid>
                     </Grid>
                     <ThemeProvider theme={theme}>

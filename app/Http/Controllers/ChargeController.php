@@ -44,7 +44,8 @@ class ChargeController extends Controller
         $charge->operation = $request->operation;
         $charge->date = date('Y-m-d H:i:s', strtotime($request->date));
         $charge->montant = $request->montant;
-        $charge->created_by = Auth::user()->id;
+        $charge->ref = $request->ref;
+        $charge->created_by = $request->created_by;
         $charge->save();
         return redirect('charge')->with('message', 'Charge ajouté avec success');
     }
@@ -87,6 +88,7 @@ class ChargeController extends Controller
         $charge->operation = $request->operation;
         $charge->date = date('Y-m-d H:i:s', strtotime($request->date));
         $charge->montant = $request->montant;
+        $charge->ref = $request->ref;
         $charge->save();
         return redirect('charge');
     }

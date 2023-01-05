@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use DateTime;
 
 class VenteController extends Controller
 {
@@ -70,12 +71,17 @@ class VenteController extends Controller
                     }
                     $nom = explode(".", $attribute);
                     $pro = request()->produit[$nom[1]];
-                    
+                    // dd($pro);
                     if($pro['name']) {
                         $name = explode(",", $pro['name']);
+                        $date = str_replace('/', '-', trim($name[3]));
+                        $EndDate = strtotime($date);
                         if (count($name) > 1) {
                             $product = InternProduct::where('productName', '=',  $name[0])
-                            ->where('volume', trim($name[1]))->first();
+                            ->where('volume', trim($name[1]))
+                            ->where('reference', trim($name[2]))
+                            ->whereDate('date', date('Y-m-d', $EndDate))
+                            ->first();
                         } else {
                             $product = ExternProduct::where('productName', '=',  $name[0])->first();
                         }
@@ -83,6 +89,9 @@ class VenteController extends Controller
     
                         if ($check) {
                             $fail('la quantité de produit est supérieure à celle du stock'); // error massage
+                        }else {
+                            $product->quantite = $product->quantite - $value;
+                            $product->save();
                         }
                     }
                   }],

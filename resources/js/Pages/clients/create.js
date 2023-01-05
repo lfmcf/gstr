@@ -30,7 +30,7 @@ export default function create(props) {
         localisation: '',
         isCompany: false,
         ece: '',
-        created_by: ''
+        created_by: props.auth.user.id
     });
 
     const handleChange = (e) => {
