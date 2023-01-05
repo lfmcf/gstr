@@ -26,7 +26,8 @@ export default function create(props) {
         operation: '',
         date: new Date(),
         montant: '',
-        created_by: ''
+        ref: '',
+        created_by: props.auth.user.id
     })
 
     const handleChange = (e) => {
@@ -68,6 +69,9 @@ export default function create(props) {
                         </Grid>
                         <Grid item md={6}>
                             <TextField variant="outlined" fullWidth size='small' label="Montant" name='montant' onChange={handleChange} />
+                        </Grid>
+                        <Grid item md={6}>
+                            <TextField variant="outlined" fullWidth size='small' label="Réference" name='ref' onChange={handleChange} />
                         </Grid>
                     </Grid>
                     <ThemeProvider theme={theme}>

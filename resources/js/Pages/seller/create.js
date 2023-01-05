@@ -25,7 +25,7 @@ export default function create(props) {
         lastName: '',
         sector: '',
         tel:'',
-        created_by: ''
+        created_by: props.auth.user.id
     })
 
     const handleChange = (e) => {

@@ -15,6 +15,14 @@ class CreateInternProductsTable extends Migration
     {
         Schema::create('intern_products', function (Blueprint $table) {
             $table->id();
+            $table->string('productName');
+            $table->string('reference');
+            $table->string('volume');
+            $table->integer('price');
+            $table->integer('quantite');
+            $table->integer('quantiteI');
+            $table->dateTime('date');
+            $table->integer('created_by');
             $table->timestamps();
         });
     }

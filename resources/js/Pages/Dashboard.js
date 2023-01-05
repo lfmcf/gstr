@@ -18,6 +18,7 @@ import Select from 'react-select';
 
 export default function Dashboard(props) {
 
+    
     const [siarr, setSiarr] = useState([])
     const [siarrv, setSiarrv] = useState([])
     const [payment, setPayement] = useState('Tous')
@@ -66,6 +67,7 @@ export default function Dashboard(props) {
     const handleClickV = () => {
         axios.post(route('getsituationv'), { "fromv": fromv, 'tov': tov }).then(res => {
             var arr = [];
+            console.log(res.data)
             for (const key in res.data) {
                 arr.push({
                     'name': key,
@@ -403,6 +405,8 @@ export default function Dashboard(props) {
             }
         },
     ]
+
+    
 
     return (
         <Authenticated

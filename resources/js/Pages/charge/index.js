@@ -16,6 +16,7 @@ import Button from '@mui/material/Button';
 import { usePage } from '@inertiajs/inertia-react';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import moment from 'moment';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -102,11 +103,22 @@ export default function index(props) {
             options: {
                 filter: true,
                 filterType: 'multiselect',
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    return moment(value).format('DD/MM/yyyy')
+                }
             }
         },
         {
             name:"montant",
             label: "Montant",
+            options: {
+                filter: true,
+                filterType: 'multiselect',
+            }
+        },
+        {
+            name:"ref",
+            label: "Réference",
             options: {
                 filter: true,
                 filterType: 'multiselect',

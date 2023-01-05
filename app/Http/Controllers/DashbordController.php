@@ -136,8 +136,13 @@ class DashbordController extends Controller
                     
                     $name = explode(",", $p['name']);
                     if (count($name) > 1) {
+                        $date = str_replace('/', '-', trim($name[3]));
+                        $EndDate = strtotime($date);
                         $pro = InternProduct::where('productName', '=',  $name[0])
-                            ->where('volume', trim($name[1]))->first();
+                            ->where('volume', trim($name[1]))
+                            ->where('reference', trim($name[2]))
+                            ->whereDate('date', date('Y-m-d', $EndDate))
+                            ->first();
                     } else {
                         $pro = ExternProduct::where('productName', '=',  $name[0])->first();
                     }
@@ -179,8 +184,13 @@ class DashbordController extends Controller
                     
                     $name = explode(",", $p['name']);
                     if (count($name) > 1) {
+                        $date = str_replace('/', '-', trim($name[3]));
+                        $EndDate = strtotime($date);
                         $pro = InternProduct::where('productName', '=',  $name[0])
-                            ->where('volume', trim($name[1]))->first();
+                            ->where('volume', trim($name[1]))
+                            ->where('reference', trim($name[2]))
+                            ->whereDate('date', date('Y-m-d', $EndDate))
+                            ->first();
                     } else {
                         $pro = ExternProduct::where('productName', '=',  $name[0])->first();
                     }

@@ -8,6 +8,10 @@ import Button from '@mui/material/Button';
 import Bread from '@/Components/Bread';
 import TextField from '@mui/material/TextField';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import moment from 'moment';
 
 const theme = createTheme({
   palette: {
@@ -30,6 +34,7 @@ export default function edit(props) {
         price: inpro.price,
         quantite: inpro.quantite,
         created_by: inpro.created_by,
+        date: inpro.date
     })
 
     const handleChange = (e) => {
@@ -66,6 +71,20 @@ export default function edit(props) {
                         </Grid>
                         <Grid item md={6}>
                             <TextField variant="outlined" fullWidth size='small' label="Quantité" name='quantite' onChange={handleChange} value={data.quantite} />
+                        </Grid>
+                        <Grid item md={6}>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <DatePicker
+                                    label="Date"
+                                    value={data.date}
+                                    inputFormat="dd/MM/yyyy"
+                                    onChange={(newValue) => {
+                                        setData('date',  moment(newValue).format('YYYY-MM-DD HH:mm:ss'));
+                                    }}
+                                    renderInput={(params) => <TextField size="small" {...params} fullWidth />}
+
+                                />
+                            </LocalizationProvider>
                         </Grid>
                     </Grid>
                     <ThemeProvider theme={theme}>

@@ -30,6 +30,7 @@ export default function create(props) {
         operation: charge.operation,
         date: charge.date,
         montant: charge.montant,
+        ref: charge.ref,
         created_by: charge.created_by
     })
 
@@ -73,6 +74,9 @@ export default function create(props) {
                         </Grid>
                         <Grid item md={6}>
                             <TextField variant="outlined" fullWidth size='small' label="Montant" name='montant' onChange={handleChange} value={data.montant} />
+                        </Grid>
+                        <Grid item md={6}>
+                            <TextField variant="outlined" fullWidth size='small' label="Réference" name='ref' onChange={handleChange} value={data.ref} />
                         </Grid>
                     </Grid>
                 </form>

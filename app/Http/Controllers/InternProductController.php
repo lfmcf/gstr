@@ -39,6 +39,7 @@ class InternProductController extends Controller
      */
     public function store(Request $request)
     {
+        
         InternProduct::create($request->all());
         return redirect('inproduct');
     }

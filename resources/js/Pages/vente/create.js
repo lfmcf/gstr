@@ -20,6 +20,7 @@ import { usePage } from '@inertiajs/inertia-react';
 import Snackbar from '@mui/material/Snackbar';
 import CloseIcon from '@mui/icons-material/Close';
 import { alpha, styled } from '@mui/material/styles';
+import moment from 'moment';
 
 const theme = createTheme({
   palette: {
@@ -44,7 +45,8 @@ export default function create(props) {
         avance: [{montant: '', date: ''}],
         reste: '',
         paye: false,
-        observation: ''
+        observation: '',
+        created_by: props.auth.user.id
     });
 
     const [open, setOpen] = React.useState(false);
@@ -151,7 +153,7 @@ export default function create(props) {
 
     let poptions = props.pro.map(function (sa) {
         if(sa.volume) {
-            return { value: sa.productName + ', ' + sa.volume, label: sa.productName + ', ' + sa.volume };
+            return { value: sa.productName + ', ' + sa.volume + ', ' + sa.reference + ', ' + moment(sa.date).format('DD/MM/yyyy'), label: sa.productName + ', ' + sa.volume + ', ' + sa.reference + ', ' + moment(sa.date).format('DD/MM/yyyy') };
         }else{
             return { value: sa.productName, label: sa.productName};
         }
