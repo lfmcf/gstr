@@ -79,10 +79,11 @@ export default function create(props) {
                             <TextField variant="outlined" fullWidth size='small' label="Réference" name='ref' onChange={handleChange} value={data.ref} />
                         </Grid>
                     </Grid>
+                    <ThemeProvider theme={theme}>
+                        <Button style={{ marginTop: '20px' }} color="neutral" type='submit' variant="contained">Modifier</Button>
+                    </ThemeProvider>
                 </form>
-                <ThemeProvider theme={theme}>
-                    <Button style={{ marginTop: '20px' }} color="neutral" type='submit' variant="contained">Modifier</Button>
-                </ThemeProvider>
+                
             </div>
         </Authenticated>
     )

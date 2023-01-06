@@ -35,9 +35,9 @@ class VenteController extends Controller
      */
     public function create()
     {
-        $exproduit = collect(ExternProduct::all());
-        $enproduit = collect(InternProduct::all());
-        $produit = $exproduit->merge($enproduit);
+        // $exproduit = collect(ExternProduct::all());
+        $produit = InternProduct::where('quantite', '>', 0)->get();
+        // $produit = $exproduit->merge($enproduit);
         
         $clinet = client::all();
        
@@ -69,11 +69,13 @@ class VenteController extends Controller
                     if (!$value) {
                         $fail(' ');
                     }
+                    // dd($attribute);
                     $nom = explode(".", $attribute);
                     $pro = request()->produit[$nom[1]];
-                    // dd($pro);
+                    
                     if($pro['name']) {
                         $name = explode(",", $pro['name']);
+                        
                         $date = str_replace('/', '-', trim($name[3]));
                         $EndDate = strtotime($date);
                         if (count($name) > 1) {
@@ -82,9 +84,10 @@ class VenteController extends Controller
                             ->where('reference', trim($name[2]))
                             ->whereDate('date', date('Y-m-d', $EndDate))
                             ->first();
-                        } else {
-                            $product = ExternProduct::where('productName', '=',  $name[0])->first();
                         }
+                        // } else {
+                        //     $product = ExternProduct::where('productName', '=',  $name[0])->first();
+                        // }
                         $check = $product->quantite < $value ? true : false;
     
                         if ($check) {

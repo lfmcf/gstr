@@ -155,7 +155,7 @@ export default function create(props) {
         if(sa.volume) {
             return { value: sa.productName + ', ' + sa.volume + ', ' + sa.reference + ', ' + moment(sa.date).format('DD/MM/yyyy'), label: sa.productName + ', ' + sa.volume + ', ' + sa.reference + ', ' + moment(sa.date).format('DD/MM/yyyy') };
         }else{
-            return { value: sa.productName, label: sa.productName};
+            return { value: sa.productName + ', ' + moment(sa.date).format('DD/MM/yyyy'), label: sa.productName + ', ' + moment(sa.date).format('DD/MM/yyyy')};
         }
         
     })
