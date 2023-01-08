@@ -11,7 +11,23 @@ import IconButton from '@mui/material/IconButton';
 export default function show(props) {
 
     const { vente } = props
-    console.log(vente.avance)
+    // console.log(vente.avance)
+
+    const handlefileShow = (doc) => {
+        window.open(doc, '_blank');
+       
+    }
+
+    const handlefileDownload = (doc) => {
+       
+        var filename = doc.substring(doc.lastIndexOf('/')+1); 
+        const link = document.createElement('a');
+        link.href = doc;
+        link.target = '_blank';
+        link.download = filename;
+        link.click();
+        
+    }
 
     return (
         <Authenticated
@@ -59,10 +75,10 @@ export default function show(props) {
                                     <td>{vt.numero}</td>
                                     <td>{moment(vt.date).format('DD/MM/YYYY')}</td>
                                     <td>
-                                        <IconButton size="small" aria-label="show">
+                                        <IconButton onClick={() => handlefileShow(vt.document)} size="small" aria-label="show">
                                             <VisibilityIcon />
                                         </IconButton>
-                                        <IconButton size="small" aria-label="Telecharger">
+                                        <IconButton onClick={() => handlefileDownload(vt.document)} size="small" aria-label="Telecharger">
                                             <DownloadIcon />
                                         </IconButton>
                                     </td>
