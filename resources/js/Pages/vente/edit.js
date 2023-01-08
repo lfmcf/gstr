@@ -17,6 +17,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Checkbox from '@mui/material/Checkbox';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import moment from 'moment';
 
 const theme = createTheme({
   palette: {
@@ -135,7 +136,7 @@ export default function edit(props) {
 
     let poptions = props.pro.map(function (sa) {
         if(sa.volume) {
-            return { value: sa.productName + ', ' + sa.volume, label: sa.productName + ', ' + sa.volume };
+            return { value: sa.productName + ', ' + sa.volume + ', ' + sa.reference + ', ' + moment(sa.date).format('DD/MM/yyyy'), label: sa.productName + ', ' + sa.volume + ', ' + sa.reference + ', ' + moment(sa.date).format('DD/MM/yyyy') };
         }else{
             return { value: sa.productName, label: sa.productName};
         }

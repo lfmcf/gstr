@@ -37,6 +37,7 @@ export default function create(props) {
 
     const handleChange = (e) => {
         setData(e.target.name, e.target.value)
+        clearErrors(e.target.name)
     }
 
     const handleSubmit = (e) => {
@@ -60,19 +61,19 @@ export default function create(props) {
                 <form onSubmit={handleSubmit}>
                     <Grid container spacing={3}>
                         <Grid item md={6}>
-                            <TextField variant="outlined" fullWidth size='small' label="Nom produit" name='productName' onChange={handleChange} />
+                            <TextField variant="outlined" fullWidth size='small' label="Nom produit" name='productName' onChange={handleChange} error={errors.productName ? true : false} />
                         </Grid>
                         <Grid item md={6}>
-                            <TextField variant="outlined" fullWidth size='small' label="Référence" name='reference' onChange={handleChange} />
+                            <TextField variant="outlined" fullWidth size='small' label="Référence" name='reference' onChange={handleChange} error={errors.reference ? true : false} />
                         </Grid>
                         <Grid item md={6}>
-                            <TextField variant="outlined" fullWidth size='small' label="Volume" name='volume' onChange={handleChange} />
+                            <TextField variant="outlined" fullWidth size='small' label="Volume" name='volume' onChange={handleChange} error={errors.volume ? true : false} />
                         </Grid>
                         <Grid item md={6}>
-                            <TextField variant="outlined" fullWidth size='small' label="Prix" name='price' onChange={handleChange} />
+                            <TextField variant="outlined" fullWidth size='small' label="Prix" name='price' onChange={handleChange} error={errors.price ? true : false} />
                         </Grid>
                         <Grid item md={6}>
-                            <TextField variant="outlined" fullWidth size='small' label="Quantité" name='quantite' onChange={handleChange} />
+                            <TextField variant="outlined" fullWidth size='small' label="Quantité" name='quantite' onChange={handleChange} error={errors.quantite ? true : false} />
                         </Grid>
                         {/* <TextField variant="outlined" style={{display:'none'}}  size='small' name='quantiteI' value={data.quantite} onChange={handleChange} /> */}
                         <Grid item md={6}>

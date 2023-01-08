@@ -39,7 +39,14 @@ class InternProductController extends Controller
      */
     public function store(Request $request)
     {
-        
+        $validated = $request->validate([
+            'productName' => 'required',
+            'reference' => 'required',
+            'volume' => 'required|regex:/^[A-z0-9 .]+$/',
+            'price' => 'required',
+            'quantite' => 'required',
+            'date' => 'required'
+        ]);
         InternProduct::create($request->all());
         return redirect('inproduct');
     }
