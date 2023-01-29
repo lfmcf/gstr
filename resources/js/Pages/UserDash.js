@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Authenticated from '@/Layouts/Authenticated';
 import { Head } from '@inertiajs/inertia-react';
 import Bread from '@/Components/Bread';
@@ -15,6 +15,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import axios from 'axios';
 import Select from 'react-select';
+import TableFooter from "@mui/material/TableFooter";
 
 export default function Dashboard(props) {
 
@@ -22,6 +23,8 @@ export default function Dashboard(props) {
     const [to, setTo] = useState(new Date());
     const [payment, setPayement] = useState('Tous');
     const [siarr, setSiarr] = useState([]);
+    const [total, setTotal] = useState();
+    const totalcredit = props.clt.reduce((prev, next) => prev + next.reste, 0);
 
     const handleSelectChange = (selectedOption, name) => {
         setPayement(selectedOption.value)
@@ -91,6 +94,16 @@ export default function Dashboard(props) {
         },
     ]
 
+    useEffect(() => {
+        const totalvente = siarr.reduce((prev, next) => prev + next.somme, 0);
+        setTotal(totalvente)
+    }, [siarr])
+
+    // useEffect(() => {
+    //     const totalcredit = siarr.reduce((prev, next) => prev + next.somme, 0);
+    //     setTotalcredit(totalcredit)
+    // }, [props.])
+
     const optionsc = {
         rowsPerPageOptions: [5,10,15, 50, 100],
         rowsPerPage: 5,
@@ -103,6 +116,82 @@ export default function Dashboard(props) {
                 useDisplayedRowsOnly: false
             }
         },
+        customFooter: (count, page, rowsPerPage, changeRowsPerPage, changePage) => {
+            return (
+                <TableFooter>
+                  <TableRow>
+                    <TableCell>Le total est: {total}</TableCell>
+                  </TableRow>
+                </TableFooter>
+              );
+        }
+    }
+
+    const columnscredit = [
+        {
+            name: 'id',
+            options: {
+                display: false,
+                filter: false,
+                viewColumns: false,
+                sort: true,
+            }
+        },
+        {
+            name:"bon",
+            label: "Bon n°",
+            options: {
+                filter: true,
+                filterType: 'multiselect',
+            }
+        },
+        {
+            name:"client",
+            label: "Client",
+            options: {
+                filter: true,
+                filterType: 'multiselect',
+            }
+        },
+        {
+            name:"payment",
+            label: "Payement",
+            options: {
+                filter: true,
+                filterType: 'multiselect',
+            }
+        },
+        {
+            name:"reste",
+            label: "Reste",
+            options: {
+                filter: true,
+                filterType: 'multiselect',
+            }
+        },
+    ]
+
+    const optionscredit = {
+        rowsPerPageOptions: [5,10,15, 50, 100],
+        rowsPerPage: 5,
+        responsive: 'vertical',
+        enableNestedDataAccess: '.',
+        downloadOptions: {
+            separator: ";",
+            filterOptions: {
+                useDisplayedColumnsOnly: false,
+                useDisplayedRowsOnly: false
+            }
+        },
+        customFooter: (count, page, rowsPerPage, changeRowsPerPage, changePage) => {
+            return (
+                <TableFooter>
+                  <TableRow>
+                    <TableCell>Le total des restes est: {totalcredit}</TableCell>
+                  </TableRow>
+                </TableFooter>
+              );
+        }
     }
 
     React.useEffect(() => {
@@ -171,6 +260,19 @@ export default function Dashboard(props) {
                         </Paper>
                     </Grid>
                 </Grid>
+
+                <Grid container spacing={2} style={{ marginTop: '10px' }}>
+                    <Grid item md={12}>
+                        <Typography style={{ marginBottom: '10px' }}>Crédit</Typography>
+                        <MUIDataTable
+                            data={props.clt}
+                            columns={columnscredit}
+                            options={optionscredit}
+                        />
+                    </Grid>
+                </Grid>
+
+
                 <Grid container spacing={2} style={{ marginTop:'10px', marginBottom:'10px' }}>
                     <Grid item md={12}>
                         <Typography style={{ marginBottom: '10px' }}>Situation Mensuelle</Typography>

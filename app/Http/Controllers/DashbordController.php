@@ -82,6 +82,7 @@ class DashbordController extends Controller
                 'clits' => $clits,
                 'total' => $total,
                 'situation' => $situation,
+                'clt' => $clt,
             ]);
         }
         
