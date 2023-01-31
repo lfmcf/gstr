@@ -247,7 +247,7 @@ export default function edit(props) {
                 </div>
                 <Grid container spacing={3} style={{marginTop:'10px',marginBottom:'20px'}}>
                     <Grid item md={6}>
-                        <TextField size="small" name='total' fullWidth label="Total" value={data.produit.reduce((a, o) => {return a + o.somme},0)} disabled />
+                        <TextField size="small" name='total' fullWidth label="Total" value={data.produit.reduce((a, o) => {return parseInt(a) + parseInt(o.somme)},0)} disabled />
                     </Grid>
                     <Grid item md={6}>
                         <Select options={[

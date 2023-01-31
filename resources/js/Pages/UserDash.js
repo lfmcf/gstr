@@ -6,7 +6,7 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import MUIDataTable from "mui-datatables";
-import {TableContainer, Table, TableBody, TableCell, TableRow, TableHead} from '@mui/material'
+import {TableContainer, Table, TableBody, TableCell, TableRow, TableHead, TablePagination} from '@mui/material'
 import moment from 'moment';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -24,11 +24,22 @@ export default function Dashboard(props) {
     const [payment, setPayement] = useState('Tous');
     const [siarr, setSiarr] = useState([]);
     const [total, setTotal] = useState();
+    // const [page, setPage] = React.useState(0);
+    // const [rowsPerPage, setRowsPerPage] = React.useState(5);
     const totalcredit = props.clt.reduce((prev, next) => prev + next.reste, 0);
 
     const handleSelectChange = (selectedOption, name) => {
         setPayement(selectedOption.value)
     }
+
+    // const handleChangePage = (event, newPage) => {
+    //     setPage(newPage);
+    // };
+
+    // const handleChangeRowsPerPage = (event) => {
+    //     setRowsPerPage(parseInt(event.target.value, 10));
+    //     setPage(0);
+    // };
 
     const handleClick = () => {
         axios.post(route('getsituation'), { "from": from, 'to': to, 'payment': payment }).then(res => {
@@ -56,6 +67,90 @@ export default function Dashboard(props) {
             }
             setSiarr(arr)
         })
+    }
+
+
+    const columns = [
+        {
+            name: 'id',
+            options: {
+                display: false,
+                filter: false,
+                viewColumns: false,
+                sort: true,
+            }
+        },
+        {
+            name:"client",
+            label: "Client",
+            options: {
+                filter: true,
+                filterType: 'multiselect',
+            }
+        },
+        {
+            name:"bon",
+            label: "Bon n°",
+            options: {
+                filter: true,
+                filterType: 'multiselect',
+            }
+        },
+        {
+            name:"payment",
+            label: "Payement",
+            options: {
+                filter: true,
+                filterType: 'multiselect',
+            }
+        },
+    ]
+    const options = {
+        rowsPerPageOptions: [5,10,15, 50, 100],
+        rowsPerPage: 5,
+        responsive: 'vertical',
+        enableNestedDataAccess: '.',
+        downloadOptions: {
+            separator: ";",
+            filterOptions: {
+                useDisplayedColumnsOnly: false,
+                useDisplayedRowsOnly: false
+            }
+        },
+        expandableRows: true,
+        renderExpandableRow: (rowData, rowMeta) => {
+            const dataValues = props.echeance.find(x => x.id === rowData[0])
+            return (
+                <>
+                <tr>
+                    <td colSpan={7}>
+                        <TableContainer>
+                            <Table aria-label="simple table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Numero</TableCell>
+                                        <TableCell>Date payement</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {dataValues.tc.map((p, index) => (
+                                        <TableRow key={index}>
+                                            {p.numero ? 
+                                            <>
+                                            <TableCell component="th" scope="row">{p.numero}</TableCell>
+                                            <TableCell component="th" scope="row">{moment(p.date).format('DD/MM/YYYY')}</TableCell>
+                                            </>
+                                            : '' }
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </td>
+                </tr>
+                </>
+            )
+        }
     }
 
     const columnss = [
@@ -105,7 +200,7 @@ export default function Dashboard(props) {
     // }, [props.])
 
     const optionsc = {
-        rowsPerPageOptions: [5,10,15, 50, 100],
+        //rowsPerPageOptions: [5,10,15, 50, 100],
         rowsPerPage: 5,
         responsive: 'vertical',
         enableNestedDataAccess: '.',
@@ -122,8 +217,18 @@ export default function Dashboard(props) {
                   <TableRow>
                     <TableCell>Le total est: {total}</TableCell>
                   </TableRow>
+                  <TableRow>
+                        <TablePagination
+                            rowsPerPageOptions={[5, 10, 25]}
+                            count={count}
+                            page={page}
+                            rowsPerPage={rowsPerPage}
+                            onRowsPerPageChange={event => changeRowsPerPage(event.target.value)}
+                            onPageChange={(_, page) => changePage(page)}
+                        />
+                  </TableRow>
                 </TableFooter>
-              );
+            );
         }
     }
 
@@ -172,7 +277,6 @@ export default function Dashboard(props) {
     ]
 
     const optionscredit = {
-        rowsPerPageOptions: [5,10,15, 50, 100],
         rowsPerPage: 5,
         responsive: 'vertical',
         enableNestedDataAccess: '.',
@@ -183,14 +287,24 @@ export default function Dashboard(props) {
                 useDisplayedRowsOnly: false
             }
         },
-        customFooter: (count, page, rowsPerPage, changeRowsPerPage, changePage) => {
+        customFooter: (count, page, rowsPerPage ,  changeRowsPerPage, changePage) => {
             return (
                 <TableFooter>
                   <TableRow>
                     <TableCell>Le total des restes est: {totalcredit}</TableCell>
                   </TableRow>
+                  <TableRow>
+                        <TablePagination
+                            rowsPerPageOptions={[5, 10, 25, 50, 100]}
+                            count={count}
+                            page={page}
+                            rowsPerPage={rowsPerPage}
+                            onRowsPerPageChange={event => changeRowsPerPage(event.target.value)}
+                            onPageChange={(_, page) => changePage(page)}
+                        />
+                  </TableRow>
                 </TableFooter>
-              );
+            );
         }
     }
 
@@ -258,6 +372,17 @@ export default function Dashboard(props) {
                                 <p>Total : {props.total} dh</p>
                             </div>
                         </Paper>
+                    </Grid>
+                </Grid>
+
+                <Grid container spacing={2} style={{ marginTop: '10px' }}>
+                    <Grid item md={12}>
+                        <Typography style={{ marginBottom: '10px' }}>Echéance</Typography>
+                        <MUIDataTable
+                            data={props.echeance}
+                            columns={columns}
+                            options={options}
+                        />
                     </Grid>
                 </Grid>
 

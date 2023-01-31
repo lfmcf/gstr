@@ -17,6 +17,7 @@ import { usePage } from '@inertiajs/inertia-react';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
+import {TableContainer, Table, TableBody, TableCell, TableRow, TableHead, TablePagination, TableFooter} from '@mui/material'
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -30,6 +31,8 @@ export default function index(props) {
     const [openAlert, setOpenAlert] = React.useState(false);
     const [ids, setIds] = React.useState();
     const { flash } = usePage().props
+
+    const totalcharge = charge.reduce((prev, next) => prev + next.montant, 0);
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -127,7 +130,7 @@ export default function index(props) {
     ]
 
     const options = {
-        rowsPerPageOptions: [5,10,15, 50, 100],
+        //rowsPerPageOptions: [5,10,15, 50, 100],
         rowsPerPage: 10,
         responsive: 'vertical',
         enableNestedDataAccess: '.',
@@ -149,6 +152,25 @@ export default function index(props) {
             return(
                 <CustomToolbar handleClick={handleNavigate} />
             )
+        },
+        customFooter: (count, page, rowsPerPage ,  changeRowsPerPage, changePage) => {
+            return (
+                <TableFooter>
+                  <TableRow>
+                    <TableCell>Le total des charges est: {totalcharge}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                        <TablePagination
+                            rowsPerPageOptions={[5, 10, 25, 50, 100]}
+                            count={count}
+                            page={page}
+                            rowsPerPage={rowsPerPage}
+                            onRowsPerPageChange={event => changeRowsPerPage(event.target.value)}
+                            onPageChange={(_, page) => changePage(page)}
+                        />
+                  </TableRow>
+                </TableFooter>
+            );
         }
     }
 

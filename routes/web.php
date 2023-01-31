@@ -61,6 +61,7 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::get('/users/update/{id}', [UserController::class, 'edit'])->name('editUser');
     Route::post('/storeuser', [UserController::class, 'store'])->name('storeUser');
     Route::post('/updateuser', [UserController::class, 'update'])->name('updateUser');
+    Route::post('/deleteUser', [UserController::class, 'destroy'])->name('deleteUser');
 
     // Route::post('/getsituation', [DashbordController::class, 'situation'])->name('getsituation');
     Route::post('/getsituationv', [DashbordController::class, 'situationv'])->name('getsituationv');

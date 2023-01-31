@@ -34,7 +34,7 @@ class UserController extends Controller
         $user->name = $request->name;
         $user->email = $request->email;
         $user->role = $request->role;
-        $user->password = Hash::make($request->name);
+        $user->password = Hash::make($request->password);
         $user->save();
 
         return redirect('/users');
@@ -58,5 +58,14 @@ class UserController extends Controller
 
         return redirect('/users');
 
+    }
+
+    public function destroy(User $user, Request $request)
+    {
+        foreach($request->ids as $id) {
+            User::find($id)->delete($id);
+        }
+        
+        return redirect('users')->with('message', 'suppression avec success');
     }
 }

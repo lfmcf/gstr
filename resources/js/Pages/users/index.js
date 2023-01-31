@@ -7,10 +7,26 @@ import { Inertia } from '@inertiajs/inertia';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import Bread from '@/Components/Bread';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Button from '@mui/material/Button';
 
 export default function index(props) {
 
     const { users } = props;
+    const [ids, setIds] = React.useState();
+    const [open, setOpen] = React.useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
 
     const handleNavigate = () => {
         Inertia.get(route('createUser'))
@@ -91,11 +107,22 @@ export default function index(props) {
                 useDisplayedRowsOnly: false
             }
         },
+        onRowsDelete: (rowsDeleted, dataRows) => {
+            const idsToDelete = rowsDeleted.data.map(d => users[d.dataIndex].id);
+            const ids = {'ids': idsToDelete};
+            setIds(ids)
+            handleClickOpen()
+        },
         customToolbar: () => {
             return(
                 <CustomToolbar handleClick={handleNavigate} />
             )
         }
+    }
+
+    const handleDelete = () => {
+        Inertia.post(route('deleteUser', ids));
+        setOpen(false)
     }
 
     return (
@@ -114,6 +141,28 @@ export default function index(props) {
                     options={options}
                 />
             </div>
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"Confirmer suppression"}
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Voulez vous vraiment suprimer les éléments selectionner ?
+                        si oui cliquer sur Confirmer ou Anunuler pour anuuler la suppression
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose}>Anunuler</Button>
+                    <Button onClick={() => handleDelete()} autoFocus>
+                        Confirmer
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Authenticated>
     )
 }

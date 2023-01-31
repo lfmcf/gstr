@@ -35,9 +35,9 @@ class DashbordController extends Controller
 
         $clt = Vente::where('paye', false)->get();
 
-        $caise = Vente::all();
+        $caise = Vente::where('payment', 'Espèce')->get();
         $charge = Charge::all();
-       
+        
         $total = 0;
         foreach ($caise as $cs) {
             if($cs->paye){
@@ -52,9 +52,13 @@ class DashbordController extends Controller
             
         }
 
+        
+
         foreach($charge as $ch) {
             $total = $total - $ch->montant;
         }
+
+        
 
         $from = date('Y-m-01');
         $to = date('Y-m-d');
@@ -83,6 +87,7 @@ class DashbordController extends Controller
                 'total' => $total,
                 'situation' => $situation,
                 'clt' => $clt,
+                'echeance' => $echeance,
             ]);
         }
         

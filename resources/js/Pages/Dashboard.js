@@ -6,7 +6,7 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import MUIDataTable from "mui-datatables";
-import {TableContainer, Table, TableBody, TableCell, TableRow, TableHead} from '@mui/material'
+import {TableContainer, Table, TableBody, TableCell, TableRow, TableHead, TablePagination} from '@mui/material'
 import moment from 'moment';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -15,6 +15,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import axios from 'axios';
 import Select from 'react-select';
+import TableFooter from "@mui/material/TableFooter";
 
 export default function Dashboard(props) {
 
@@ -26,6 +27,9 @@ export default function Dashboard(props) {
     const [to, setTo] = useState(new Date());
     const [fromv, setFromv] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1 ));
     const [tov, setTov] = useState(new Date());
+    const [totalsomme, setTotalsomme] = useState();
+    const [totalbeni, setTotalbeni] = useState();
+    const totalcredit = props.clt.reduce((prev, next) => prev + next.reste, 0);
 
     const handleSelectChange = (selectedOption, name) => {
         setPayement(selectedOption.value)
@@ -81,7 +85,13 @@ export default function Dashboard(props) {
         })
     }
 
-    
+    React.useEffect(() => {
+        
+        const totalvente = siarr.reduce((prev, next) => prev + next.somme, 0);
+        const totalbenife = siarr.reduce((prev, next) => prev + next.benifice, 0);
+        setTotalsomme(totalvente)
+        setTotalbeni(totalbenife)
+    }, [siarr])
 
     React.useEffect(() => {
         var arr = [], arrv = [];
@@ -259,7 +269,39 @@ export default function Dashboard(props) {
         },
     ]
 
-    const optionsc = {
+    const optionscredit = {
+        rowsPerPage: 5,
+        responsive: 'vertical',
+        enableNestedDataAccess: '.',
+        downloadOptions: {
+            separator: ";",
+            filterOptions: {
+                useDisplayedColumnsOnly: false,
+                useDisplayedRowsOnly: false
+            }
+        },
+        customFooter: (count, page, rowsPerPage ,  changeRowsPerPage, changePage) => {
+            return (
+                <TableFooter>
+                  <TableRow>
+                    <TableCell>Le total des restes est: {totalcredit}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                        <TablePagination
+                            rowsPerPageOptions={[5, 10, 25, 50, 100]}
+                            count={count}
+                            page={page}
+                            rowsPerPage={rowsPerPage}
+                            onRowsPerPageChange={event => changeRowsPerPage(event.target.value)}
+                            onPageChange={(_, page) => changePage(page)}
+                        />
+                  </TableRow>
+                </TableFooter>
+            );
+        }
+    }
+
+    const optionSituationM = {
         rowsPerPageOptions: [5,10,15, 50, 100],
         rowsPerPage: 5,
         responsive: 'vertical',
@@ -271,6 +313,26 @@ export default function Dashboard(props) {
                 useDisplayedRowsOnly: false
             }
         },
+        customFooter: (count, page, rowsPerPage ,  changeRowsPerPage, changePage) => {
+            return (
+                <TableFooter>
+                  <TableRow>
+                    <TableCell>Le total des sommes est: {totalsomme}</TableCell>
+                    <TableCell>Le total de benifice est: {totalbeni}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                        <TablePagination
+                            rowsPerPageOptions={[5, 10, 25]}
+                            count={count}
+                            page={page}
+                            rowsPerPage={rowsPerPage}
+                            onRowsPerPageChange={event => changeRowsPerPage(event.target.value)}
+                            onPageChange={(_, page) => changePage(page)}
+                        />
+                  </TableRow>
+                </TableFooter>
+            );
+        }
     }
 
     const columnss = [
@@ -300,14 +362,6 @@ export default function Dashboard(props) {
             }
         },
         {
-            name: "somme",
-            label: "Somme",
-            options: {
-                filter: true,
-                filterType: 'multiselect',
-            }
-        },
-        {
             name: "prix",
             label: "Prix d'achat",
             options: {
@@ -315,6 +369,15 @@ export default function Dashboard(props) {
                 filterType: 'multiselect',
             }
         },
+        {
+            name: "somme",
+            label: "Somme",
+            options: {
+                filter: true,
+                filterType: 'multiselect',
+            }
+        },
+       
         {
             name: "benifice",
             label: "benifice",
@@ -351,8 +414,8 @@ export default function Dashboard(props) {
                                     <TableRow>
                                         <TableCell>Nom</TableCell>
                                         <TableCell>Quantité</TableCell>
-                                        <TableCell>Somme</TableCell>
                                         <TableCell>Prix de vente</TableCell>
+                                        <TableCell>Somme</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -361,8 +424,8 @@ export default function Dashboard(props) {
                                             <TableRow >
                                                 <TableCell component="th" scope="row">{p.name}</TableCell>
                                                 <TableCell component="th" scope="row">{p.quantite}</TableCell>
-                                                <TableCell component="th" scope="row">{p.somme}</TableCell>
                                                 <TableCell component="th" scope="row">{p.prix}</TableCell>
+                                                <TableCell component="th" scope="row">{p.somme}</TableCell>
                                             </TableRow>
                                         ))
                                     ))
@@ -441,6 +504,16 @@ export default function Dashboard(props) {
                 </Grid>
                 <Grid container spacing={2} style={{ marginTop: '10px' }}>
                     <Grid item md={12}>
+                        <Typography style={{ marginBottom: '10px' }}>Caise</Typography>
+                        <Paper style={{padding:'10px'}}>
+                            <div>
+                                <p>Total : {props.total} dh</p>
+                            </div>
+                        </Paper>
+                    </Grid>
+                </Grid>
+                <Grid container spacing={2} style={{ marginTop: '10px' }}>
+                    <Grid item md={12}>
                         <Typography style={{ marginBottom: '10px' }}>Echéance</Typography>
                         <MUIDataTable
                             data={props.echeance}
@@ -455,20 +528,11 @@ export default function Dashboard(props) {
                         <MUIDataTable
                             data={props.clt}
                             columns={columnsc}
-                            options={optionsc}
+                            options={optionscredit}
                         />
                     </Grid>
                 </Grid>
-                <Grid container spacing={2} style={{ marginTop: '10px' }}>
-                    <Grid item md={12}>
-                        <Typography style={{ marginBottom: '10px' }}>Caise</Typography>
-                        <Paper style={{padding:'10px'}}>
-                            <div>
-                                <p>Total : {props.total} dh</p>
-                            </div>
-                        </Paper>
-                    </Grid>
-                </Grid>
+                
                 <Grid container spacing={2} style={{ marginTop:'10px', marginBottom:'10px' }}>
                     <Grid item md={12}>
                         <Typography style={{ marginBottom: '10px' }}>Situation Mensuelle</Typography>
@@ -527,7 +591,7 @@ export default function Dashboard(props) {
                         <MUIDataTable
                             data={siarr}
                             columns={columnss}
-                            options={optionsc}
+                            options={optionSituationM}
                         />
                     </Grid>
                 </Grid>
