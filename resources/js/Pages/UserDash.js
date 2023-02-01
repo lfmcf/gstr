@@ -26,7 +26,7 @@ export default function Dashboard(props) {
     const [total, setTotal] = useState();
     // const [page, setPage] = React.useState(0);
     // const [rowsPerPage, setRowsPerPage] = React.useState(5);
-    const totalcredit = props.clt.reduce((prev, next) => prev + next.reste, 0);
+    const totalcredit = props.clt.reduce((prev, next) => parseInt(prev) + parseInt(next.reste), 0);
 
     const handleSelectChange = (selectedOption, name) => {
         setPayement(selectedOption.value)
