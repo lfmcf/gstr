@@ -35,7 +35,9 @@ class DashbordController extends Controller
 
         $clt = Vente::where('paye', false)->get();
 
-        $caise = Vente::where('payment', 'Espèce')->get();
+        $caise = Vente::where('payment', 'Espèce')->orWhere(function($query){
+            $query->where('payment', 'Crédit');
+        })->get();
         $charge = Charge::all();
         
         $total = 0;
