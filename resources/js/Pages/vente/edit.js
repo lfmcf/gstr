@@ -144,7 +144,7 @@ export default function edit(props) {
     })
 
     React.useEffect(() => {
-        setData('reste', data.produit.reduce((a, o) => {return a + o.somme},0) - data.avance[0].montant)
+        setData('reste', data.produit.reduce((a, o) => {return parseInt(a) + parseInt(o.somme)},0) - data.avance[0].montant)
     }, [data.avance[0].montant])
 
     return (
