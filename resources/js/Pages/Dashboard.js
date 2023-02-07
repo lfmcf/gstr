@@ -122,16 +122,17 @@ export default function Dashboard(props) {
         }
         setSiarr(arr)
         
-        for (const key in props.situationv) {
-            arrv.push({
-                'name': key,
-                'ventes': props.situationv[key].length,
-                // 'somme': som,
-                // 'prix': prix,
-                // 'benifice': beni
-            })
-        }
-        setSiarrv(arrv)
+        // for (const key in props.situationv) {
+        //     arrv.push({
+        //         'name': key,
+        //         'ventes': props.situationv[key].length,
+        //         // 'somme': som,
+        //         // 'prix': prix,
+        //         // 'benifice': beni
+        //     })
+        // }
+        console.log(props.situationv)
+        setSiarrv(props.situationv)
     }, []);
 
     const columns = [
@@ -400,45 +401,45 @@ export default function Dashboard(props) {
                 useDisplayedRowsOnly: false
             }
         },
-        expandableRows: true,
-        renderExpandableRow: (rowData, rowMeta) => {
-            var name = rowData[1]
-            console.log(props.situationv[name])
-            return (
-                <>
-                <tr>
-                    <td colSpan={7}>
-                        <TableContainer>
-                            <Table aria-label="simple table">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Nom</TableCell>
-                                        <TableCell>Quantité</TableCell>
-                                        <TableCell>Prix de vente</TableCell>
-                                        <TableCell>Somme</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {props.situationv[name].map((pro) => (
-                                        pro.produit.map(p => (
-                                            <TableRow >
-                                                <TableCell component="th" scope="row">{p.name}</TableCell>
-                                                <TableCell component="th" scope="row">{p.quantite}</TableCell>
-                                                <TableCell component="th" scope="row">{p.prix}</TableCell>
-                                                <TableCell component="th" scope="row">{p.somme}</TableCell>
-                                            </TableRow>
-                                        ))
-                                    ))
-                                    }
+        // expandableRows: true,
+        // renderExpandableRow: (rowData, rowMeta) => {
+        //     var name = rowData[1]
+        //     console.log(props.situationv[name])
+        //     return (
+        //         <>
+        //         <tr>
+        //             <td colSpan={7}>
+        //                 <TableContainer>
+        //                     <Table aria-label="simple table">
+        //                         <TableHead>
+        //                             <TableRow>
+        //                                 <TableCell>Nom</TableCell>
+        //                                 <TableCell>Quantité</TableCell>
+        //                                 <TableCell>Prix de vente</TableCell>
+        //                                 <TableCell>Somme</TableCell>
+        //                             </TableRow>
+        //                         </TableHead>
+        //                         <TableBody>
+        //                             {props.situationv[name].map((pro) => (
+        //                                 pro.produit.map(p => (
+        //                                     <TableRow >
+        //                                         <TableCell component="th" scope="row">{p.name}</TableCell>
+        //                                         <TableCell component="th" scope="row">{p.quantite}</TableCell>
+        //                                         <TableCell component="th" scope="row">{p.prix}</TableCell>
+        //                                         <TableCell component="th" scope="row">{p.somme}</TableCell>
+        //                                     </TableRow>
+        //                                 ))
+        //                             ))
+        //                             }
                                    
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </td>
-                </tr>
-                </>
-            )
-        }
+        //                         </TableBody>
+        //                     </Table>
+        //                 </TableContainer>
+        //             </td>
+        //         </tr>
+        //         </>
+        //     )
+        // }
     }
 
     const columnv = [
@@ -452,7 +453,7 @@ export default function Dashboard(props) {
             }
         },
         {
-            name: "name",
+            name: "vend",
             label: "Nom",
             options: {
                 filter: true,
@@ -460,8 +461,16 @@ export default function Dashboard(props) {
             }
         },
         {
-            name: "ventes",
-            label: "Ventes",
+            name: "somme",
+            label: "Somme",
+            options: {
+                filter: true,
+                filterType: 'multiselect',
+            }
+        },
+        {
+            name: "credit",
+            label: "Credit",
             options: {
                 filter: true,
                 filterType: 'multiselect',

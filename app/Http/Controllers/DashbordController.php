@@ -183,32 +183,57 @@ class DashbordController extends Controller
     {
         $situationve = Vente::whereBetween('date', [$from, $to])
         ->get()->groupBy('vendeur');
-
+        $sm = 0;
+        $cr = 0;
+        $arr = [];
+        $vend = "";
         foreach($situationve as $key => $value) {
-            
-            foreach($situationve[$key] as $si){
-                $arr = [];
-                foreach($si->produit as $p) {
-                    
-                    $name = explode(",", $p['name']);
-                    if (count($name) > 1) {
-                        $date = str_replace('/', '-', trim($name[3]));
-                        $EndDate = strtotime($date);
-                        $pro = InternProduct::where('productName', '=',  $name[0])
-                            ->where('volume', trim($name[1]))
-                            ->where('reference', trim($name[2]))
-                            ->whereDate('date', date('Y-m-d', $EndDate))
-                            ->first();
-                    } else {
-                        $pro = ExternProduct::where('productName', '=',  $name[0])->first();
+            $vend = $key;
+            foreach($value as $si){
+                // dd($si);
+                
+                if($si->paye) {
+                    foreach($si->produit as $p) {
+                        $sm += $p['somme'];
                     }
-                   
-                    $p['prixAchat'] = $pro->price;
-                    array_push($arr, $p);
+                }else {
+                    foreach($si->avance as $av) {
+                        // dd($av['montant']);
+                        $sm += $av['montant'];
+                    }
+                    $cr += $si->reste;
                 }
-                $si->produit = $arr;
             }
+            array_push($arr, ["somme" => $sm, "credit" => $cr,  "vend" => $vend]);
         }
-        return $situationve;
+        // dd($sm);
+        
+        // dd($arr);
+        // foreach($situationve as $key => $value) {
+            
+        //     foreach($situationve[$key] as $si){
+        //         $arr = [];
+        //         foreach($si->produit as $p) {
+                    
+        //             $name = explode(",", $p['name']);
+        //             if (count($name) > 1) {
+        //                 $date = str_replace('/', '-', trim($name[3]));
+        //                 $EndDate = strtotime($date);
+        //                 $pro = InternProduct::where('productName', '=',  $name[0])
+        //                     ->where('volume', trim($name[1]))
+        //                     ->where('reference', trim($name[2]))
+        //                     ->whereDate('date', date('Y-m-d', $EndDate))
+        //                     ->first();
+        //             } else {
+        //                 $pro = ExternProduct::where('productName', '=',  $name[0])->first();
+        //             }
+                   
+        //             $p['prixAchat'] = $pro->price;
+        //             array_push($arr, $p);
+        //         }
+        //         $si->produit = $arr;
+        //     }
+        // }
+        return $arr;
     }
 }
