@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Authenticated from '@/Layouts/Authenticated';
 import { Head } from '@inertiajs/inertia-react';
 import MUIDataTable from "mui-datatables";
@@ -17,7 +17,12 @@ import { usePage } from '@inertiajs/inertia-react';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
-import {TableContainer, Table, TableBody, TableCell, TableRow, TableHead, TablePagination, TableFooter} from '@mui/material'
+import {TableContainer, Table, TableBody, TableCell, TableRow, TableHead, TablePagination, TableFooter} from '@mui/material';
+import Grid from '@mui/material/Grid';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import TextField from '@mui/material/TextField';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -26,12 +31,14 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 export default function index(props) {
 
-    const { charge } = props;
+    // const { charge } = props;
     const [open, setOpen] = React.useState(false);
     const [openAlert, setOpenAlert] = React.useState(false);
     const [ids, setIds] = React.useState();
-    const { flash } = usePage().props
-
+    const { flash } = usePage().props;
+    const [fromv, setFromv] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1 ));
+    const [tov, setTov] = useState(new Date());
+    const [charge, setCharge] = useState(props.charge);
     const totalcharge = charge.reduce((prev, next) => prev + next.montant, 0);
 
     const handleClickOpen = () => {
@@ -52,6 +59,12 @@ export default function index(props) {
 
     const update = (row) => {
         Inertia.get(route('editCharge', { id: row.id}))
+    }
+
+    const handleClickV = () => {
+        axios.post(route('getcharge'), { "fromv": fromv, 'tov': tov }).then(res => {
+            setCharge(res.data)
+        })
     }
 
     React.useEffect(() => {
@@ -187,6 +200,41 @@ export default function index(props) {
         >
             <Head title="Charges" />
             <Bread title="Charges" />
+            <Grid container spacing={2} style={{ marginTop:'10px', marginBottom:'10px' }}>
+                <Grid item md={5}>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <DatePicker
+                            label="Du"
+                            value={fromv}
+                            inputFormat="dd/MM/yyyy"
+                            onChange={(newValue) => {
+                                setFromv(newValue);
+                            }}
+                            renderInput={(params) => <TextField size='small' {...params} fullWidth />}
+
+                        />
+                    </LocalizationProvider>
+                </Grid>
+                <Grid item md={5}>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <DatePicker
+                            label="Au"
+                            value={tov}
+                            inputFormat="dd/MM/yyyy"
+                            onChange={(newValue) => {
+                                setTov(newValue);
+                            }}
+                            renderInput={(params) => <TextField size='small' {...params} fullWidth />}
+
+                        />
+                    </LocalizationProvider>
+                </Grid>
+                <Grid item md={2}>
+                    <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Button variant="outlined" onClick={handleClickV}>Chercher</Button>
+                    </div>
+                </Grid>
+            </Grid>
             <div>
                 
                 <MUIDataTable

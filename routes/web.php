@@ -9,6 +9,7 @@ use App\Http\Controllers\DashbordController;
 use App\Http\Controllers\SellerController;
 use App\Http\Controllers\InternProductController;
 use App\Http\Controllers\ExternProductController;
+use App\Http\Controllers\FactureController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VenteController;
 use App\Models\Charge;
@@ -63,6 +64,10 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     Route::post('/updateuser', [UserController::class, 'update'])->name('updateUser');
     Route::post('/deleteUser', [UserController::class, 'destroy'])->name('deleteUser');
 
+    Route::get('/facture', [FactureController::class, 'index']);
+    Route::get('/facture/create', [FactureController::class, 'create'])->name('createFacture');
+    Route::post('/storfacture', [FactureController::class, 'store'])->name('storeFacture');
+
     // Route::post('/getsituation', [DashbordController::class, 'situation'])->name('getsituation');
     Route::post('/getsituationv', [DashbordController::class, 'situationv'])->name('getsituationv');
     // Route::get('/dashboard', function () {
@@ -83,6 +88,7 @@ Route::post('/getsituation', [DashbordController::class, 'situation'])->name('ge
     Route::get('/charge/update/{id}', [ChargeController::class, 'edit'])->name('editCharge');
     Route::post('/updateCharge', [ChargeController::class, 'update'])->name('updateCharge');
     Route::post('deleteCharge', [ChargeController::class, 'destroy'])->name('deleteCharge');
+    Route::post('/getcharge', [ChargeController::class, 'getCharge'])->name('getcharge');
 
     Route::get('/client', [ClientController::class, 'index']);
     Route::get('/client/create', [ClientController::class, 'create'])->name("createClient");

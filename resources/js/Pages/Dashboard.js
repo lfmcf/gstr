@@ -70,18 +70,7 @@ export default function Dashboard(props) {
 
     const handleClickV = () => {
         axios.post(route('getsituationv'), { "fromv": fromv, 'tov': tov }).then(res => {
-            var arr = [];
-            console.log(res.data)
-            for (const key in res.data) {
-                arr.push({
-                    'name': key,
-                    'ventes': res.data[key].length,
-                    // 'somme': som,
-                    // 'prix': prix,
-                    // 'benifice': beni
-                })
-            }
-            setSiarrv(arr)
+            setSiarrv(res.data)
         })
     }
 
@@ -122,16 +111,6 @@ export default function Dashboard(props) {
         }
         setSiarr(arr)
         
-        // for (const key in props.situationv) {
-        //     arrv.push({
-        //         'name': key,
-        //         'ventes': props.situationv[key].length,
-        //         // 'somme': som,
-        //         // 'prix': prix,
-        //         // 'benifice': beni
-        //     })
-        // }
-        console.log(props.situationv)
         setSiarrv(props.situationv)
     }, []);
 
@@ -401,45 +380,39 @@ export default function Dashboard(props) {
                 useDisplayedRowsOnly: false
             }
         },
-        // expandableRows: true,
-        // renderExpandableRow: (rowData, rowMeta) => {
-        //     var name = rowData[1]
-        //     console.log(props.situationv[name])
-        //     return (
-        //         <>
-        //         <tr>
-        //             <td colSpan={7}>
-        //                 <TableContainer>
-        //                     <Table aria-label="simple table">
-        //                         <TableHead>
-        //                             <TableRow>
-        //                                 <TableCell>Nom</TableCell>
-        //                                 <TableCell>Quantité</TableCell>
-        //                                 <TableCell>Prix de vente</TableCell>
-        //                                 <TableCell>Somme</TableCell>
-        //                             </TableRow>
-        //                         </TableHead>
-        //                         <TableBody>
-        //                             {props.situationv[name].map((pro) => (
-        //                                 pro.produit.map(p => (
-        //                                     <TableRow >
-        //                                         <TableCell component="th" scope="row">{p.name}</TableCell>
-        //                                         <TableCell component="th" scope="row">{p.quantite}</TableCell>
-        //                                         <TableCell component="th" scope="row">{p.prix}</TableCell>
-        //                                         <TableCell component="th" scope="row">{p.somme}</TableCell>
-        //                                     </TableRow>
-        //                                 ))
-        //                             ))
-        //                             }
-                                   
-        //                         </TableBody>
-        //                     </Table>
-        //                 </TableContainer>
-        //             </td>
-        //         </tr>
-        //         </>
-        //     )
-        // }
+        expandableRows: true,
+        renderExpandableRow: (rowData, rowMeta) => {
+            var proarr = siarrv[rowMeta.rowIndex].products
+            return (
+                <>
+                <tr>
+                    <td colSpan={7}>
+                        <TableContainer>
+                            <Table aria-label="simple table">
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Nom</TableCell>
+                                        <TableCell>Total</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {
+                                        Object.keys(proarr).map((key, val) => (
+                                            
+                                            <TableRow key={val}>
+                                                <TableCell component="th" scope="row">{key}</TableCell>
+                                                <TableCell component="th" scope="row">{Object.values(proarr[key]).reduce((a, b) => parseInt(a) + parseInt(b), 0)}</TableCell>
+                                            </TableRow>
+                                        ))
+                                    }
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </td>
+                </tr>
+                </>
+            )
+        }
     }
 
     const columnv = [

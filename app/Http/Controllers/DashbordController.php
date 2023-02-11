@@ -187,10 +187,25 @@ class DashbordController extends Controller
         $cr = 0;
         $arr = [];
         $vend = "";
+        $arrPerPro = [];
+        $smPerPro = 0;
+        $name = "";
+        $temparr = array();
         foreach($situationve as $key => $value) {
             $vend = $key;
+            
             foreach($value as $si){
-                // dd($si);
+                
+                foreach($si->produit as $pro) {
+                    $nomComplet = explode(",", $pro['name']);
+                    $name = $nomComplet[0] . "," . $nomComplet[1] . "," . $nomComplet[2];
+                    $smPerPro = $pro['somme'];
+                    array_push($arrPerPro, ["produit" => $name, "somme" => $smPerPro]);
+                }
+
+                foreach ($arrPerPro as $key => $item) {
+                    $temparr[$item['produit']][$key] = $item['somme'];
+                }
                 
                 if($si->paye) {
                     foreach($si->produit as $p) {
@@ -198,42 +213,31 @@ class DashbordController extends Controller
                     }
                 }else {
                     foreach($si->avance as $av) {
-                        // dd($av['montant']);
                         $sm += $av['montant'];
                     }
                     $cr += $si->reste;
                 }
             }
-            array_push($arr, ["somme" => $sm, "credit" => $cr,  "vend" => $vend]);
-        }
-        // dd($sm);
-        
-        // dd($arr);
-        // foreach($situationve as $key => $value) {
+            array_push($arr, ["somme" => $sm, "credit" => $cr,  "vend" => $vend, "products" => $temparr]);
+            $arrPerPro = [];
+            $smPerPro = 0;
+            $name = "";
+            $sm = 0;
+            $cr = 0;
+            $temparr = [];
             
-        //     foreach($situationve[$key] as $si){
-        //         $arr = [];
-        //         foreach($si->produit as $p) {
-                    
-        //             $name = explode(",", $p['name']);
-        //             if (count($name) > 1) {
-        //                 $date = str_replace('/', '-', trim($name[3]));
-        //                 $EndDate = strtotime($date);
-        //                 $pro = InternProduct::where('productName', '=',  $name[0])
-        //                     ->where('volume', trim($name[1]))
-        //                     ->where('reference', trim($name[2]))
-        //                     ->whereDate('date', date('Y-m-d', $EndDate))
-        //                     ->first();
-        //             } else {
-        //                 $pro = ExternProduct::where('productName', '=',  $name[0])->first();
-        //             }
-                   
-        //             $p['prixAchat'] = $pro->price;
-        //             array_push($arr, $p);
-        //         }
-        //         $si->produit = $arr;
-        //     }
-        // }
+        }
+
+        
+        // foreach($arr as $prr){
+        // foreach ($prr['products'] as $key => $item) {
+            
+        //     $temparr[$item['produit']][$key] = $item;
+        // }}
+        //ksort($temparr, SORT_NUMERIC);
+
+        //dd($arr);
+
         return $arr;
     }
 }

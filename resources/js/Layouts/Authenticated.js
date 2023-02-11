@@ -98,9 +98,14 @@ export default function Authenticated({ auth, header, children }) {
                         <a href="/vente">Vente</a>
                     </li>
                     {auth.user.role === 'admin' ?
+                    <>
+                    <li>
+                        <a href="/facture">Factures</a>
+                    </li>
                     <li>
                         <a href="/users">Utilisateurs</a>
                     </li>
+                    </>
                     : ''}
                 </ul>
             </div>

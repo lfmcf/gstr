@@ -16,10 +16,17 @@ class ChargeController extends Controller
      */
     public function index()
     {
-        $charge = Charge::all();
+        $from = date('Y-m-01');
+        $to = date('Y-m-d');
+        $charge = Charge::whereBetween('date', [$from, $to])->get();
         return Inertia::render('charge/index', [
             'charge' => $charge
         ]);
+    }
+
+    public function getCharge(Request $request) {
+        $charge = Charge::whereBetween('date', [date("y-m-d", strtotime($request->fromv)), date("y-m-d", strtotime($request->tov))])->get();
+        return response()->json($charge);
     }
 
     /**
