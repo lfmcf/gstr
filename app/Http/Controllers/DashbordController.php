@@ -185,6 +185,7 @@ class DashbordController extends Controller
         ->get()->groupBy('vendeur');
         $sm = 0;
         $cr = 0;
+        $ech = 0;
         $arr = [];
         $vend = "";
         $arrPerPro = [];
@@ -206,7 +207,7 @@ class DashbordController extends Controller
                 foreach ($arrPerPro as $key => $item) {
                     $temparr[$item['produit']][$key] = $item['somme'];
                 }
-                
+                // dd($si);
                 if($si->paye) {
                     foreach($si->produit as $p) {
                         $sm += $p['somme'];
@@ -215,15 +216,21 @@ class DashbordController extends Controller
                     foreach($si->avance as $av) {
                         $sm += $av['montant'];
                     }
-                    $cr += $si->reste;
+                    if($si->payment == 'Crédit' || $si->payment == 'Espèce') {
+                        $cr += $si->reste;
+                    }else {
+                        $ech += $si->reste;
+                    }
+                    
                 }
             }
-            array_push($arr, ["somme" => $sm, "credit" => $cr,  "vend" => $vend, "products" => $temparr]);
+            array_push($arr, ["somme" => $sm, "credit" => $cr, "echeance" => $ech,  "vend" => $vend, "products" => $temparr]);
             $arrPerPro = [];
             $smPerPro = 0;
             $name = "";
             $sm = 0;
             $cr = 0;
+            $ech = 0;
             $temparr = [];
             
         }

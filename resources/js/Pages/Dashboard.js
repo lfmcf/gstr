@@ -442,6 +442,14 @@ export default function Dashboard(props) {
             }
         },
         {
+            name: "echeance",
+            label: "Echeanche",
+            options: {
+                filter: true,
+                filterType: 'multiselect',
+            }
+        },
+        {
             name: "credit",
             label: "Credit",
             options: {
