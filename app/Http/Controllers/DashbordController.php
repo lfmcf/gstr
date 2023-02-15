@@ -198,16 +198,17 @@ class DashbordController extends Controller
             foreach($value as $si){
                 
                 foreach($si->produit as $pro) {
+                    
                     $nomComplet = explode(",", $pro['name']);
                     $name = $nomComplet[0] . "," . $nomComplet[1] . "," . $nomComplet[2];
                     $smPerPro = $pro['somme'];
-                    array_push($arrPerPro, ["produit" => $name, "somme" => $smPerPro]);
+                    array_push($arrPerPro, ["produit" => $name, "somme" => $smPerPro, "qnt" => $pro['quantite']]);
                 }
-
+                
                 foreach ($arrPerPro as $key => $item) {
-                    $temparr[$item['produit']][$key] = $item['somme'];
+                    $temparr[$item['produit']][$key] = ["sm" => $item['somme'], "qnt" => $item['qnt']];
                 }
-                // dd($si);
+                
                 if($si->paye) {
                     foreach($si->produit as $p) {
                         $sm += $p['somme'];

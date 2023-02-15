@@ -173,6 +173,7 @@ export default function Dashboard(props) {
                                 <TableHead>
                                     <TableRow>
                                         <TableCell>Numero</TableCell>
+                                        <TableCell>Montant</TableCell>
                                         <TableCell>Date payement</TableCell>
                                     </TableRow>
                                 </TableHead>
@@ -182,6 +183,7 @@ export default function Dashboard(props) {
                                             {p.numero ? 
                                             <>
                                             <TableCell component="th" scope="row">{p.numero}</TableCell>
+                                            <TableCell component="th" scope="row">{p.montant}</TableCell>
                                             <TableCell component="th" scope="row">{moment(p.date).format('DD/MM/YYYY')}</TableCell>
                                             </>
                                             : '' }
@@ -383,6 +385,7 @@ export default function Dashboard(props) {
         expandableRows: true,
         renderExpandableRow: (rowData, rowMeta) => {
             var proarr = siarrv[rowMeta.rowIndex].products
+            
             return (
                 <>
                 <tr>
@@ -392,16 +395,17 @@ export default function Dashboard(props) {
                                 <TableHead>
                                     <TableRow>
                                         <TableCell>Nom</TableCell>
+                                        <TableCell>Quantite</TableCell>
                                         <TableCell>Total</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     {
                                         Object.keys(proarr).map((key, val) => (
-                                            
                                             <TableRow key={val}>
                                                 <TableCell component="th" scope="row">{key}</TableCell>
-                                                <TableCell component="th" scope="row">{Object.values(proarr[key]).reduce((a, b) => parseInt(a) + parseInt(b), 0)}</TableCell>
+                                                <TableCell component="th" scope="row">{Object.values(proarr[key]).reduce((a, b) => parseInt(a) + parseInt(b.qnt), 0)}</TableCell>
+                                                <TableCell component="th" scope="row">{Object.values(proarr[key]).reduce((a, b) => parseInt(a) + parseInt(b.sm), 0)}</TableCell>
                                             </TableRow>
                                         ))
                                     }

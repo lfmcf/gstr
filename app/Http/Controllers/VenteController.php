@@ -22,7 +22,7 @@ class VenteController extends Controller
      */
     public function index()
     {
-        $vente = Vente::all();
+        $vente = Vente::orderBy('date', 'desc')->get();
         return Inertia::render('vente/index', [
             'vente' => $vente
         ]);

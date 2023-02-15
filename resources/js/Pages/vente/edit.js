@@ -55,7 +55,7 @@ export default function edit(props) {
 
     let addtcFields = () => {
         let newArr = { ...data };
-        newArr.tc.push({numero: '', date: new Date(), document: ''});
+        newArr.tc.push({numero: '', montant:'', date: new Date(), document: ''});
         setData(newArr);
     }
 
@@ -289,14 +289,17 @@ export default function edit(props) {
                                     : ''
                                 }
                                 <Grid container spacing={2}>
-                                    <Grid item md={4}>
-                                        <TextField name='numero' value={data.tc[index].numero} size="small" fullWidth label='Numero' onChange={e => handleTcChange(index, e)} />
+                                    <Grid item md={3}>
+                                        <TextField name='numero' value={element.numero} size="small" fullWidth label='Numero' onChange={e => handleTcChange(index, e)} />
                                     </Grid>
-                                    <Grid item md={4}>
+                                    <Grid item md={3}>
+                                        <TextField name='montant' size="small" value={element.montant} fullWidth label='Montant' onChange={e => handleTcChange(index, e)} />
+                                    </Grid>
+                                    <Grid item md={3}>
                                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                                             <DatePicker
                                                 label="Date Payement"
-                                                value={data.tc[index].date}
+                                                value={element.date}
                                                 inputFormat="dd/MM/yyyy"
                                                 name="date"
                                                 onChange={(newValue) => handleTcDateChange(index, newValue)}
@@ -304,7 +307,7 @@ export default function edit(props) {
                                             />
                                         </LocalizationProvider>
                                     </Grid>
-                                    <Grid item md={4}>
+                                    <Grid item md={3}>
                                         <TextField type='file' name='document' size='small' fullWidth onChange={e => handleTcChange(index, e)} />
                                     </Grid>
                                 </Grid>

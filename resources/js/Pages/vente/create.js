@@ -41,7 +41,7 @@ export default function create(props) {
         client: '',
         produit: [{ name: '', somme: '', prix: '', quantite: '' }],
         payment: '',
-        tc: [{numero: '', date: new Date(), document: ''}],
+        tc: [{numero: '', montant:'', date: new Date(), document: ''}],
         avance: [{montant: '', date: ''}],
         reste: '',
         paye: false,
@@ -71,7 +71,7 @@ export default function create(props) {
 
     let addtcFields = () => {
         let newArr = { ...data };
-        newArr.tc.push({numero: '', date: new Date(), document: ''});
+        newArr.tc.push({numero: '', montant:'', date: new Date(), document: ''});
         setData(newArr);
     }
 
@@ -338,10 +338,13 @@ export default function create(props) {
                                     : ''
                                 }
                                 <Grid container spacing={2}>
-                                    <Grid item md={4}>
+                                    <Grid item md={3}>
                                         <TextField name='numero' size="small" fullWidth label='Numero' onChange={e => handleTcChange(index, e)} />
                                     </Grid>
-                                    <Grid item md={4}>
+                                    <Grid item md={3}>
+                                        <TextField name='montant' size="small" fullWidth label='Montant' onChange={e => handleTcChange(index, e)} />
+                                    </Grid>
+                                    <Grid item md={3}>
                                         <LocalizationProvider dateAdapter={AdapterDateFns}>
                                             <DatePicker
                                                 label="Date Payement"
@@ -353,7 +356,7 @@ export default function create(props) {
                                             />
                                         </LocalizationProvider>
                                     </Grid>
-                                    <Grid item md={4}>
+                                    <Grid item md={3}>
                                         <TextField type='file' name='document' size='small' fullWidth onChange={e => handleTcChange(index, e)} />
                                     </Grid>
                                 </Grid>

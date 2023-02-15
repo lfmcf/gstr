@@ -129,6 +129,7 @@ export default function Dashboard(props) {
                                 <TableHead>
                                     <TableRow>
                                         <TableCell>Numero</TableCell>
+                                        <TableCell>Montant</TableCell>
                                         <TableCell>Date payement</TableCell>
                                     </TableRow>
                                 </TableHead>
@@ -138,6 +139,7 @@ export default function Dashboard(props) {
                                             {p.numero ? 
                                             <>
                                             <TableCell component="th" scope="row">{p.numero}</TableCell>
+                                            <TableCell component="th" scope="row">{p.montant}</TableCell>
                                             <TableCell component="th" scope="row">{moment(p.date).format('DD/MM/YYYY')}</TableCell>
                                             </>
                                             : '' }
