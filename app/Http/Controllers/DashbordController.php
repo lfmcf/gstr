@@ -110,14 +110,12 @@ class DashbordController extends Controller
         return response()->json($situationv);
      }
 
-    public function getSituation($from, $to, $pay) 
-    {
+    public function getSituation($from, $to, $pay) {
         
         if($pay == 'Tous'|| $pay == '') {
-            $situation = Vente::whereBetween('date', [$from, $to])
+            $situation = Vente::whereBetween('date', ["2023-01-01", $to])
             ->get()->groupBy('produit.*.name');
         }elseif($pay == 'Traite') {
-            
             $situation = Vente::whereBetween('date', [$from, $to])
             ->where('payment', '=', 'Traite')
             ->get()->groupBy('produit.*.name');
@@ -137,11 +135,9 @@ class DashbordController extends Controller
         }
        
         foreach($situation as $key => $value) {
-            
             foreach($situation[$key] as $si){
                 $arr = [];
                 foreach($si->produit as $p) {
-                    
                     $name = explode(",", $p['name']);
                     if (count($name) > 1) {
                         $date = str_replace('/', '-', trim($name[3]));
@@ -151,8 +147,6 @@ class DashbordController extends Controller
                             ->where('reference', trim($name[2]))
                             ->whereDate('date', date('Y-m-d', $EndDate))
                             ->first();
-                    } else {
-                        $pro = ExternProduct::where('productName', '=',  $name[0])->first();
                     }
                    
                     $p['prixAchat'] = $pro->price;
@@ -160,21 +154,9 @@ class DashbordController extends Controller
                 }
                 $si->produit = $arr;
             }
-
-            // $name = explode(",", $key);
-            
-            // if(count($name) > 1) {
-            //     $pro = InternProduct::where('productName', '=',  $name[0])
-            //     ->where('volume', trim($name[1]))->first();
-            // }
-            // else {
-            //     $pro = ExternProduct::where('productName', '=',  $name[0])->first();
-            // }
-
-            // foreach($situation[$key] as $si){
-            //     $si->prixAchat = $pro->price;
-            // }
         }
+
+        //dd($situation);
        
         return $situation;
     }

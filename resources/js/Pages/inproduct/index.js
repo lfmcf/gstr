@@ -10,7 +10,7 @@ import Bread from '@/Components/Bread';
 import moment from 'moment';
 
 export default function index(props) {
-
+    
     const { inpro } = props;
 
     const handleNavigate = () => {
@@ -134,6 +134,84 @@ export default function index(props) {
         }
     }
 
+    const otheroptions = {
+        rowsPerPageOptions: [5,10,15, 50, 100],
+        rowsPerPage: 10,
+        responsive: 'vertical',
+        enableNestedDataAccess: '.',
+        downloadOptions: {
+            separator: ";",
+            filterOptions: {
+                useDisplayedColumnsOnly: false,
+                useDisplayedRowsOnly: false
+            }
+        },
+        selectableRows: false
+    }
+
+    const othercolumns = [
+        // {
+        //     name: 'id',
+        //     options: {
+        //         display: false,
+        //         filter: false,
+        //         viewColumns: false,
+        //         sort: true,
+        //     }
+        // },
+        {
+            name:"productName",
+            label: "Nom produit",
+            options: {
+                filter: true,
+                filterType: 'multiselect',
+            }
+        },
+        {
+            name:"reference",
+            label: "Référence",
+            options: {
+                filter: true,
+                filterType: 'multiselect',
+            }
+        },
+        {
+            name:"volume",
+            label: "Volume",
+            options: {
+                filter: true,
+                filterType: 'multiselect',
+            }
+        },
+        {
+            name:"quantiteI",
+            label: "Quantité initial",
+            options: {
+                filter: true,
+                filterType: 'multiselect',
+            }
+        },
+        {
+            name:"quantite",
+            label: "Quantité",
+            options: {
+                filter: true,
+                filterType: 'multiselect',
+            }
+        },
+        {
+            name:"date",
+            label: "Date d'ajout",
+            options: {
+                filter: true,
+                filterType: 'multiselect',
+                customBodyRender: (value, tableMeta, updateValue) => {
+                    return moment(value).format('DD/MM/yyyy')
+                }
+            }
+        },
+    ]
+
     return (
         <Authenticated
             auth={props.auth}
@@ -143,11 +221,18 @@ export default function index(props) {
             <Head title="Produits internes" />
             <Bread title="Produits Internes" />
             <div>
+                {props.auth.user.role === 'admin' ? 
                 <MUIDataTable
                     data={inpro}
                     columns={columns}
                     options={options}
                 />
+                :
+                <MUIDataTable
+                    data={inpro}
+                    columns={othercolumns}
+                    options={otheroptions}
+                />}
             </div>
         </Authenticated>
     )

@@ -78,11 +78,12 @@ export default function Authenticated({ auth, header, children }) {
                     <li>
                         <a href="/client">Client</a>
                     </li>
-                    {auth.user.role === 'admin' ?
-                    <>
+                   
                     <li>
                         <a href="/inproduct">Produit Interne</a>
                     </li>
+                    {auth.user.role === 'admin' ?
+                    <>
                     <li>
                         <a href="/exproduct">Produit Externe</a>
                     </li>

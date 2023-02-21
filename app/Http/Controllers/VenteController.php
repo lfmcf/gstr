@@ -20,9 +20,12 @@ class VenteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public $product = [];
+
     public function index()
     {
-        $vente = Vente::orderBy('date', 'desc')->get();
+        $vente = Vente::all();
         return Inertia::render('vente/index', [
             'vente' => $vente
         ]);
@@ -58,52 +61,70 @@ class VenteController extends Controller
      */
     public function store(Request $request)
     {
+        // $request->produit[0]['name'] = $request->produit[0]['name']['value'];
+        // dd($request->produit);
         $this->validate(request(),
             [
                 'date' => 'required',
                 'vendeur' => 'required',
                 'client' => 'required',
                 'produit.*.name' => 'required',
+                'produit.*.prix' => 'required',
+                'payment' => 'required',
+                'avance.*.montant' => 'required',
                 'produit.*.quantite' => [function ($attribute, $value, $fail) {
 
                     if (!$value) {
                         $fail(' ');
                     }
-                    // dd($attribute);
-                    $nom = explode(".", $attribute);
-                    $pro = request()->produit[$nom[1]];
                     
-                    if($pro['name']) {
-                        $name = explode(",", $pro['name']);
+                    $nom = explode(".", $attribute);
+                    
+                    $pro = request()->produit[$nom[1]];
+                    $fpro = $pro['name'];
+                    if($fpro) {
+                        $name = explode(",", $fpro);
                         
                         $date = str_replace('/', '-', trim($name[3]));
+                       
                         $EndDate = strtotime($date);
+                        
                         if (count($name) > 1) {
-                            $product = InternProduct::where('productName', '=',  $name[0])
+                            $produit = InternProduct::where('productName', '=',  $name[0])
                             ->where('volume', trim($name[1]))
                             ->where('reference', trim($name[2]))
                             ->whereDate('date', date('Y-m-d', $EndDate))
                             ->first();
                         }
-                        // } else {
-                        //     $product = ExternProduct::where('productName', '=',  $name[0])->first();
-                        // }
-                        $check = $product->quantite < $value ? true : false;
+                        
+                        $check = $produit->quantite < $value ? true : false;
     
                         if ($check) {
                             $fail('la quantité de produit est supérieure à celle du stock'); // error massage
                         }else {
-                            $product->quantite = $product->quantite - $value;
-                            $product->save();
+                            $produit->quantite = $produit->quantite - $value;
+                            // $produit->save();
+                            array_push($this->product, $produit);
                         }
                     }
-                  }],
-                'produit.*.prix' => 'required',
-                'payment' => 'required',
-                'avance.*.montant' => 'required'
+                }],
             ]
             
         );
+       
+        foreach($this->product as $value) {
+            if ($value instanceof InternProduct) {
+                $value->save();
+            }
+        }
+        
+        // $datapro = [];
+        // foreach($request->produit as $dpro) {
+        //     array_push($datapro, ['name' => $dpro['name']['value'], 'somme' => $dpro['somme'], 'prix' => $dpro['prix'], 'quantite' => $dpro['quantite']]);
+        // }
+
+        // dd($datapro);
+
         $vent = new Vente();
         $vent->bon = $request->bon;
         $vent->date = date('Y-m-d H:i:s', strtotime($request->date));
@@ -185,9 +206,10 @@ class VenteController extends Controller
     public function edit(Vente $vente, Request $request)
     {
         $vente = Vente::find($request->id);
-        $exproduit = collect(ExternProduct::all());
-        $enproduit = collect(InternProduct::all());
-        $produit = $exproduit->merge($enproduit);
+        // $exproduit = collect(ExternProduct::all());
+        // $enproduit = collect(InternProduct::all());
+        // $produit = $exproduit->merge($enproduit);
+        $produit = InternProduct::where('quantite', '>', 0)->get();
         $clinet = client::all();
         $vendeur = Seller::all();
 

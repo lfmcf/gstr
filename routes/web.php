@@ -42,7 +42,7 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
 
     // Route::get('/', [DashbordController::class, 'index']);
 
-    Route::get('/inproduct', [InternProductController::class, 'index']);
+    
     Route::get('/inproduct/create', [InternProductController::class, 'create'])->name("createInProduct");
     Route::post('/storeinproduct', [InternProductController::class, 'store'])->name("storeinproduct");
     Route::get('/inproduct/update/{id}', [InternProductController::class, 'edit'])->name("editInproduct");
@@ -81,6 +81,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::get('/dashboard', [DashbordController::class, 'index']);
 Route::get('/', [DashbordController::class, 'index']);
 Route::post('/getsituation', [DashbordController::class, 'situation'])->name('getsituation');
+
+Route::get('/inproduct', [InternProductController::class, 'index']);
 
     Route::get('/charge', [ChargeController::class, 'index']);
     Route::get('/charge/create', [ChargeController::class, 'create'])->name("createCharge");

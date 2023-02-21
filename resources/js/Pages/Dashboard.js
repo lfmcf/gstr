@@ -84,17 +84,18 @@ export default function Dashboard(props) {
 
     React.useEffect(() => {
         var arr = [], arrv = [];
+        console.table(props.situation)
         for (const key in props.situation) {
+            
             var som = 0;
             var prix = 0, quan = 0, beni = 0;
             props.situation[key].forEach(item => {
                 
                 item.produit.forEach(element => {
-                    if(element.name == key) {
+                    if(element.name === key) {
                         som += parseInt(element.somme)
                         prix = element.prixAchat
                         quan += parseInt(element.quantite)
-                        
                     }
                     beni = som - (prix * quan)
                 });

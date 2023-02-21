@@ -84,7 +84,7 @@ export default function edit(props) {
         
         let newFormValues = { ...data };
         name.action == 'clear' ? newFormValues.produit[i][name.name] = "" :
-        newFormValues.produit[i][name.name] = selectedOption.value;
+        newFormValues.produit[i][name.name] = selectedOption;
         setData(newFormValues);
     }
 
@@ -228,7 +228,10 @@ export default function edit(props) {
                                             onChange={(selectedOption, name) => handleProduitSelectChange(selectedOption, name, index)}
                                             className="basic"
                                             classNamePrefix="basic"
-                                            defaultValue={{label: element.name, value: element.name}}
+                                            // defaultValue={{label:element.name, value:element.name}}
+                                            // getOptionValue ={(option)=>option.value}
+                                            value={poptions.find(option => option.value === element.name)}
+                                            
                                         />
                                     </Grid>
                                     <Grid item md={6}>

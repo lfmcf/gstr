@@ -10,7 +10,7 @@ import IconButton from '@mui/material/IconButton';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import TextField, { TextFieldProps } from '@mui/material/TextField';
+import TextField from '@mui/material/TextField';
 import Bread from '@/Components/Bread';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Checkbox from '@mui/material/Checkbox';
@@ -19,7 +19,6 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { usePage } from '@inertiajs/inertia-react';
 import Snackbar from '@mui/material/Snackbar';
 import CloseIcon from '@mui/icons-material/Close';
-import { alpha, styled } from '@mui/material/styles';
 import moment from 'moment';
 
 const theme = createTheme({
@@ -77,7 +76,9 @@ export default function create(props) {
 
     let removeProduitFields = (i) => {
         let newArr = { ...data };
+        
         newArr.produit.splice(i, 1);
+        console.log(newArr)
         setData(newArr);
     }
 
@@ -97,12 +98,13 @@ export default function create(props) {
         clearErrors(name.name)
     }
 
-    const handleProduitSelectChange = (selectedOption, name, i) => {
+    const handleProduitSelectChange = (selectedOption, nom, i) => {
         
         let newFormValues = { ...data };
-        name.action == 'clear' ? newFormValues.produit[i][name.name] = "" :
-        newFormValues.produit[i][name.name] = selectedOption.value;
-        clearErrors('produit.' + i + '.' + name.name)
+        nom.action == 'clear' ? newFormValues.produit[i][nom.name] = "" :
+        newFormValues.produit[i][nom.name] = selectedOption.value;
+        clearErrors('produit.' + i + '.' + nom.name)
+        console.log(newFormValues)
         setData(newFormValues);
     }
 
@@ -152,11 +154,11 @@ export default function create(props) {
     })
 
     let poptions = props.pro.map(function (sa) {
-        if(sa.volume) {
+        // if(sa.volume) {
             return { value: sa.productName + ', ' + sa.volume + ', ' + sa.reference + ', ' + moment(sa.date).format('DD/MM/yyyy'), label: sa.productName + ', ' + sa.volume + ', ' + sa.reference + ', ' + moment(sa.date).format('DD/MM/yyyy') };
-        }else{
-            return { value: sa.productName + ', ' + moment(sa.date).format('DD/MM/yyyy'), label: sa.productName + ', ' + moment(sa.date).format('DD/MM/yyyy')};
-        }
+        // }else{
+        //     return { value: sa.productName + ', ' + moment(sa.date).format('DD/MM/yyyy'), label: sa.productName + ', ' + moment(sa.date).format('DD/MM/yyyy')};
+        // }
         
     })
 
@@ -259,14 +261,14 @@ export default function create(props) {
                                 <Grid container spacing={3}>
                                     <Grid item md={6}>
                                         <Select options={poptions}
-                                            name='name'
-                                            placeholder='Nom produit'
-                                            isClearable
-                                            onChange={(selectedOption, name) => handleProduitSelectChange(selectedOption, name, index)}
-                                            styles={selectStyles(errors['produit.' + index + '.name'])}
+                                            name="name"
+                                            onChange={(selectedOption, nom) => handleProduitSelectChange(selectedOption, nom, index)}
                                             className="basic"
                                             classNamePrefix="basic"
-                                            inp
+                                            placeholder='Nom produit'
+                                            isClearable
+                                            styles={selectStyles(errors['produit.' + index + '.name'])}
+                                            value={poptions.find(option => option.value === element.name)}
                                         />
                                         
                                     </Grid>
@@ -278,13 +280,14 @@ export default function create(props) {
                                             label="Quantité" 
                                             onChange={e => handleProduitChange(index, e)} 
                                             error = {errors['produit.' + index + '.quantite'] ? true : false }
+                                            value={element.quantite}
                                         />
                                         <div>
                                             <p style={{color:'red'}}>{errors['produit.' + index + '.quantite']}</p>
                                         </div>
                                     </Grid>
                                     <Grid item md={6}>
-                                        <TextField size="small" type="number" name='prix' fullWidth label="Prix" onChange={e => handleProduitChange(index, e)} error = {errors['produit.' + index + '.prix'] ? true : false } />
+                                        <TextField size="small" type="number" value={element.prix} name='prix' fullWidth label="Prix" onChange={e => handleProduitChange(index, e)} error = {errors['produit.' + index + '.prix'] ? true : false } />
                                     </Grid>
                                     <Grid item md={6}>
                                         <TextField size="small" name='somme' fullWidth label="Somme" value={element.somme} disabled />
