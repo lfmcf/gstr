@@ -80,11 +80,12 @@ export default function edit(props) {
         setData(name.name, "") : setData(name.name, selectedOption.value);
     }
 
-    const handleProduitSelectChange = (selectedOption, name, i) => {
-        
+    const handleProduitSelectChange = (selectedOption, nom, i) => {
+        console.log(selectedOption)
         let newFormValues = { ...data };
-        name.action == 'clear' ? newFormValues.produit[i][name.name] = "" :
-        newFormValues.produit[i][name.name] = selectedOption;
+        name.action == 'clear' ? newFormValues.produit[i][nom.name] = "" :
+        newFormValues.produit[i][nom.name] = selectedOption.value;
+        clearErrors('produit.' + i + '.' + nom.name)
         setData(newFormValues);
     }
 
@@ -93,6 +94,7 @@ export default function edit(props) {
         newFormValues.produit[i][e.target.name] = e.target.value;
         e.target.name === 'prix' || e.target.name === 'quantite' ? 
         newFormValues.produit[i]['somme'] = newFormValues.produit[i]['prix'] * newFormValues.produit[i]['quantite'] : ''
+        clearErrors(newFormValues.produit[i]['name'])
         setData(newFormValues);
     }
 
@@ -225,7 +227,7 @@ export default function edit(props) {
                                             name='name'
                                             placeholder='Nom produit'
                                             isClearable
-                                            onChange={(selectedOption, name) => handleProduitSelectChange(selectedOption, name, index)}
+                                            onChange={(selectedOption, nom) => handleProduitSelectChange(selectedOption, nom, index)}
                                             className="basic"
                                             classNamePrefix="basic"
                                             // defaultValue={{label:element.name, value:element.name}}
@@ -235,7 +237,18 @@ export default function edit(props) {
                                         />
                                     </Grid>
                                     <Grid item md={6}>
-                                        <TextField size="small" type="number" name='quantite' fullWidth label="Quantité" onChange={e => handleProduitChange(index, e)} value={element.quantite} />
+                                        <TextField size="small" 
+                                            type="number" 
+                                            name='quantite' 
+                                            fullWidth 
+                                            label="Quantité" 
+                                            onChange={e => handleProduitChange(index, e)} 
+                                            value={element.quantite}
+                                            error = {errors[element.name] ? true : false }
+                                        />
+                                        <div>
+                                            <p style={{color:'red'}}>{errors[element.name]}</p>
+                                        </div>
                                     </Grid>
                                     <Grid item md={6}>
                                         <TextField size="small" type="number" name='prix' fullWidth label="Prix" onChange={e => handleProduitChange(index, e)} value={element.prix} />

@@ -113,7 +113,7 @@ class DashbordController extends Controller
     public function getSituation($from, $to, $pay) {
         
         if($pay == 'Tous'|| $pay == '') {
-            $situation = Vente::whereBetween('date', ["2023-01-01", $to])
+            $situation = Vente::whereBetween('date', [$from, $to])
             ->get()->groupBy('produit.*.name');
         }elseif($pay == 'Traite') {
             $situation = Vente::whereBetween('date', [$from, $to])
