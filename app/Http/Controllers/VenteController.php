@@ -230,7 +230,6 @@ class VenteController extends Controller
      */
     public function update(Request $request, Vente $vente)
     {
-        
         $vent = Vente::find($request->id);
         $vent->bon = $request->bon;
         $vent->date = date('Y-m-d H:i:s', strtotime($request->date));
@@ -243,6 +242,90 @@ class VenteController extends Controller
         $vent->paye = $request->paye;
         $vent->observation = $request->observation;
         $vent->created_by = Auth::user()->id;
+        
+        if($vent->isDirty('produit')) {
+            $original = $vent->getOriginal('produit');
+            
+            $new = $vent->produit;
+            $nameToAdd = []; $nameToRemove = []; $nameToCheck = [];
+            foreach($new as $gr) {
+                if ($pos = array_search($gr['name'], array_column($original,'name')) === false) {
+                    array_push($nameToAdd, ['name' => $gr['name'], 'quantite' => $gr['quantite']]);
+                }else {
+                    array_push($nameToCheck, $gr);
+                }
+            }
+            foreach($original as $g) {
+                if (array_search($g['name'], array_column($new,'name')) === false) {
+                    array_push($nameToRemove, ['name' => $g['name'], 'quantite' => $g['quantite']]);
+                }
+            }
+
+            if($nameToCheck){
+            foreach($nameToCheck as $eletocheck) {
+                $pos = array_search($eletocheck, $original);
+                if($original[$pos]['quantite'] != $eletocheck['quantite'] || $original[$pos]['prix'] !=  $eletocheck['prix']){
+                    $pro = $eletocheck['name'];
+                    $name = explode(",", $pro);
+                    $date = str_replace('/', '-', trim($name[3]));
+                    $EndDate = strtotime($date);
+                    $produit = InternProduct::where('productName', '=',  $name[0])
+                    ->where('volume', trim($name[1]))
+                    ->where('reference', trim($name[2]))
+                    ->whereDate('date', date('Y-m-d', $EndDate))
+                    ->first();
+                    if($original[$pos]['quantite'] > $eletocheck['quantite']) {
+                        $quan = $original[$pos]['quantite'] - $eletocheck['quantite'];
+                        $produit->quantite = $produit->quantite + $quan;
+                        $produit->save();
+                        $new[$pos]['prix'] = $eletocheck['prix'];
+                    }else {
+                        $quan = $eletocheck['quantite'] - $original[$pos]['quantite'];
+                        if($produit->quantite > $quan) {
+                            $produit->quantite = $produit->quantite - $quan;
+                        }else {
+                            return back()->withErrors([$eletocheck['name'] => "la quantité de produit est supérieure à celle du stock"]);
+                        }
+                        $produit->save();
+                        $new[$pos]['prix'] = $eletocheck['prix'];
+                    }
+                }
+            }}
+
+            if($nameToAdd){
+            foreach($nameToAdd as $eletoadd) {
+                $pro = $eletoadd['name'];
+                $name = explode(",", $pro);
+                $date = str_replace('/', '-', trim($name[3]));
+                $EndDate = strtotime($date);
+                $produit = InternProduct::where('productName', '=',  $name[0])
+                ->where('volume', trim($name[1]))
+                ->where('reference', trim($name[2]))
+                ->whereDate('date', date('Y-m-d', $EndDate))
+                ->first();
+                if($produit->quantite > $eletoadd['quantite']){
+                    $produit->quantite = $produit->quantite - $eletoadd['quantite'];
+                    $produit->save();
+                }else {
+                    return back()->withErrors([$eletoadd['name'] => "la quantité de produit est supérieure à celle du stock"]);
+                }
+            }}
+
+            if($nameToRemove){
+            foreach($nameToRemove as $eletoremove) {
+                $pro = $eletoremove['name'];
+                $name = explode(",", $pro);
+                $date = str_replace('/', '-', trim($name[3]));
+                $EndDate = strtotime($date);
+                $produit = InternProduct::where('productName', '=',  $name[0])
+                ->where('volume', trim($name[1]))
+                ->where('reference', trim($name[2]))
+                ->whereDate('date', date('Y-m-d', $EndDate))
+                ->first();
+                $produit->quantite = $produit->quantite + $eletoadd['quantite'];
+                $produit->save();
+            }
+        }}
 
         $docs = $request->tc;
 
