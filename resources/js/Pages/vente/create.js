@@ -90,6 +90,7 @@ export default function create(props) {
 
     const handleChange = (e) => {
         setData(e.target.name, e.target.value)
+        clearErrors(e.target.name)
     }
 
     const handleSelectChange = (selectedOption, name) => {
@@ -198,7 +199,7 @@ export default function create(props) {
             <form onSubmit={handleSubmit}>
                 <Grid container spacing={3} style={{marginTop: '10px'}}>
                     <Grid item md={6}>
-                        <TextField label="Bon n°" size="small" name='bon' fullWidth onChange={handleChange} />
+                        <TextField label="Bon n°" size="small" name='bon' fullWidth onChange={handleChange} error = {errors.bon ? true : false } />
                     </Grid>
                     <Grid item md={6}>
                         <LocalizationProvider dateAdapter={AdapterDateFns}>

@@ -65,6 +65,7 @@ class VenteController extends Controller
         // dd($request->produit);
         $this->validate(request(),
             [
+                'bon' => 'required|unique:ventes',
                 'date' => 'required',
                 'vendeur' => 'required',
                 'client' => 'required',
@@ -361,7 +362,21 @@ class VenteController extends Controller
     public function destroy(Vente $vente, Request $request)
     {
         foreach($request->ids as $id) {
-            Vente::find($id)->delete($id);
+            $vente = Vente::find($id);
+            foreach($vente->produit as $pro) {
+                $name = explode(",", $pro['name']);
+                $date = str_replace('/', '-', trim($name[3]));
+                $EndDate = strtotime($date);
+                $produit = InternProduct::where('productName', '=',  $name[0])
+                ->where('volume', trim($name[1]))
+                ->where('reference', trim($name[2]))
+                ->whereDate('date', date('Y-m-d', $EndDate))
+                ->first();
+                $produit->quantite = $produit->quantite + $pro['quantite'];
+                $produit->save();
+                $vente->delete();
+            }
+            //Vente::find($id)->delete($id);
         }
         
         return redirect('vente')->with('message', 'suppression avec success');
