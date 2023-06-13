@@ -20,6 +20,8 @@ import Button from '@mui/material/Button';
 import { usePage } from '@inertiajs/inertia-react';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
+import CheckIcon from '@mui/icons-material/Check';
+import CloseIcon from '@mui/icons-material/Close';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -172,6 +174,17 @@ export default function index(props) {
                 }
             }
         },
+        {
+            name:"paye",
+            label: "Payé",
+            options: {
+                filter: true,
+                filterType: '',
+                customBodyRender: (value) => {
+                    return (value ?  <CheckIcon color='success' /> : <CloseIcon color='error' />)
+                }
+            }
+        }
     ]
 
     const options = {

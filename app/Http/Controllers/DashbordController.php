@@ -38,6 +38,11 @@ class DashbordController extends Controller
         $caise = Vente::where('payment', 'Espèce')->orWhere(function($query){
             $query->where('payment', 'Crédit');
         })->get();
+
+        $caise_ct = Vente::where('payment', 'Traite')->orWhere(function($query){
+            $query->where('payment', 'Chèque');
+        })->get();
+
         $charge = Charge::all();
         
         $total = 0;
@@ -54,6 +59,12 @@ class DashbordController extends Controller
             
         }
 
+        foreach ($caise_ct as $cs) {
+
+            foreach ($cs->avance as $av) {
+                $total += intval($av['montant']);
+            }
+        }
         
 
         foreach($charge as $ch) {
