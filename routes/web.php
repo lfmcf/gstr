@@ -12,6 +12,9 @@ use App\Http\Controllers\ExternProductController;
 use App\Http\Controllers\FactureController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VenteController;
+use App\Http\Controllers\StockController;
+use App\Http\Controllers\ConteneurController;
+use App\Http\Controllers\MovementController;
 use App\Models\Charge;
 
 /*
@@ -42,7 +45,18 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
 
     // Route::get('/', [DashbordController::class, 'index']);
 
-    
+    Route::get('/conteneurs', [ConteneurController::class, 'index'])->name('conteneurs');
+    Route::get('/conteneurs/create', [ConteneurController::class, 'create'])->name('createConteneur');
+    Route::post('storeConteneur', [ConteneurController::class, 'store'])->name('storeConteneur');
+    Route::post('/prductsfromcon', [ConteneurController::class, 'products'])->name('prductsfromcon');
+    Route::get('/conteneurs/show', [ConteneurController::class, 'show'])->name('Showconteneurs');
+    Route::get('/conteneurs/edit', [ConteneurController::class, 'edit'])->name('Editconteneurs');
+    Route::post('updateConteneur', [ConteneurController::class, 'update'])->name('updateConteneur');
+
+
+    Route::get('/movements', [MovementController::class, 'index'])->name('movements');
+
+
     Route::get('/inproduct/create', [InternProductController::class, 'create'])->name("createInProduct");
     Route::post('/storeinproduct', [InternProductController::class, 'store'])->name("storeinproduct");
     Route::get('/inproduct/update/{id}', [InternProductController::class, 'edit'])->name("editInproduct");
@@ -77,12 +91,12 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    
-Route::get('/dashboard', [DashbordController::class, 'index']);
-Route::get('/', [DashbordController::class, 'index']);
-Route::post('/getsituation', [DashbordController::class, 'situation'])->name('getsituation');
 
-Route::get('/inproduct', [InternProductController::class, 'index']);
+    Route::get('/dashboard', [DashbordController::class, 'index']);
+    Route::get('/', [DashbordController::class, 'index']);
+    Route::post('/getsituation', [DashbordController::class, 'situation'])->name('getsituation');
+
+    Route::get('/inproduct', [InternProductController::class, 'index']);
 
     Route::get('/charge', [ChargeController::class, 'index']);
     Route::get('/charge/create', [ChargeController::class, 'create'])->name("createCharge");
@@ -115,6 +129,10 @@ Route::get('/inproduct', [InternProductController::class, 'index']);
     Route::get('/avance/{id}', [VenteController::class, 'getavance'])->name("avance");
     Route::post('/deleteVente', [VenteController::class, 'destroy'])->name("deleteVente");
     Route::post('/addAvance', [VenteController::class, 'updateAvance'])->name('addAvance');
+
+    Route::get('/stock', [StockController::class, 'index'])->name('stock');
+    Route::get('/attach', [StockController::class, 'create'])->name('attach');
+    Route::post('attahctoseller', [StockController::class, 'store']);
 });
 
 

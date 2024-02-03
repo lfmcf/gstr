@@ -22,17 +22,17 @@ import CloseIcon from '@mui/icons-material/Close';
 import moment from 'moment';
 
 const theme = createTheme({
-  palette: {
-    neutral: {
-      main: 'rgb(86,152,161)',
-      contrastText: '#fff',
+    palette: {
+        neutral: {
+            main: 'rgb(86,152,161)',
+            contrastText: '#fff',
+        },
     },
-  },
 });
 
 
 export default function create(props) {
-    
+
     const { data, setData, post, processing, errors, clearErrors, reset } = useForm({
         bon: '',
         date: new Date(),
@@ -40,8 +40,8 @@ export default function create(props) {
         client: '',
         produit: [{ name: '', somme: '', prix: '', quantite: '' }],
         payment: '',
-        tc: [{numero: '', montant:'', date: new Date(), document: ''}],
-        avance: [{montant: '', date: ''}],
+        tc: [{ numero: '', montant: '', date: new Date(), document: '' }],
+        avance: [{ montant: '', date: '' }],
         reste: '',
         paye: false,
         observation: '',
@@ -50,7 +50,7 @@ export default function create(props) {
 
     const [open, setOpen] = React.useState(false);
     const { flash } = usePage().props
-   
+
     React.useEffect(() => {
         flash.message ? setOpen(true) : setOpen(false)
     }, [])
@@ -70,15 +70,13 @@ export default function create(props) {
 
     let addtcFields = () => {
         let newArr = { ...data };
-        newArr.tc.push({numero: '', montant:'', date: new Date(), document: ''});
+        newArr.tc.push({ numero: '', montant: '', date: new Date(), document: '' });
         setData(newArr);
     }
 
     let removeProduitFields = (i) => {
         let newArr = { ...data };
-        
         newArr.produit.splice(i, 1);
-        console.log(newArr)
         setData(newArr);
     }
 
@@ -95,15 +93,15 @@ export default function create(props) {
 
     const handleSelectChange = (selectedOption, name) => {
         name.action == 'clear' ?
-        setData(name.name, "") : setData(name.name, selectedOption.value);
+            setData(name.name, "") : setData(name.name, selectedOption.value);
         clearErrors(name.name)
     }
 
     const handleProduitSelectChange = (selectedOption, nom, i) => {
-        
+
         let newFormValues = { ...data };
         nom.action == 'clear' ? newFormValues.produit[i][nom.name] = "" :
-        newFormValues.produit[i][nom.name] = selectedOption.value;
+            newFormValues.produit[i][nom.name] = selectedOption.value;
         clearErrors('produit.' + i + '.' + nom.name)
         console.log(newFormValues)
         setData(newFormValues);
@@ -112,19 +110,19 @@ export default function create(props) {
     const handleProduitChange = (i, e) => {
         let newFormValues = { ...data };
         newFormValues.produit[i][e.target.name] = e.target.value;
-        e.target.name === 'prix' || e.target.name === 'quantite' ? 
-        newFormValues.produit[i]['somme'] = newFormValues.produit[i]['prix'] * newFormValues.produit[i]['quantite'] : ''
+        e.target.name === 'prix' || e.target.name === 'quantite' ?
+            newFormValues.produit[i]['somme'] = newFormValues.produit[i]['prix'] * newFormValues.produit[i]['quantite'] : ''
         clearErrors('produit.' + i + '.' + e.target.name)
         setData(newFormValues);
     }
 
     const handleTcChange = (i, e) => {
-        
+
         let newFormValues = { ...data };
-        if(e.target.files && e.target.files.length > 0) {
+        if (e.target.files && e.target.files.length > 0) {
             newFormValues.tc[i][e.target.name] = e.target.files[0];
-        }else {
-            newFormValues.tc[i][e.target.name] =  e.target.value;
+        } else {
+            newFormValues.tc[i][e.target.name] = e.target.value;
         }
         setData(newFormValues);
     }
@@ -156,30 +154,30 @@ export default function create(props) {
 
     let poptions = props.pro.map(function (sa) {
         // if(sa.volume) {
-            return { value: sa.productName + ', ' + sa.volume + ', ' + sa.reference + ', ' + moment(sa.date).format('DD/MM/yyyy'), label: sa.productName + ', ' + sa.volume + ', ' + sa.reference + ', ' + moment(sa.date).format('DD/MM/yyyy') };
+        return { value: sa.productName + ', ' + sa.volume, label: sa.productName + ', ' + sa.volume };
         // }else{
         //     return { value: sa.productName + ', ' + moment(sa.date).format('DD/MM/yyyy'), label: sa.productName + ', ' + moment(sa.date).format('DD/MM/yyyy')};
         // }
-        
+
     })
 
     React.useEffect(() => {
-        setData('reste', data.produit.reduce((a, o) => {return parseInt(a) + parseInt(o.somme)},0) - data.avance[0].montant)
+        setData('reste', data.produit.reduce((a, o) => { return parseInt(a) + parseInt(o.somme) }, 0) - data.avance[0].montant)
     }, [data.avance[0].montant])
 
     const action = (
         <React.Fragment>
-          <Button color="secondary" size="small" onClick={handleClose}>
-            UNDO
-          </Button>
-          <IconButton
-            size="small"
-            aria-label="close"
-            color="inherit"
-            onClick={handleClose}
-          >
-            <CloseIcon fontSize="small" />
-          </IconButton>
+            <Button color="secondary" size="small" onClick={handleClose}>
+                UNDO
+            </Button>
+            <IconButton
+                size="small"
+                aria-label="close"
+                color="inherit"
+                onClick={handleClose}
+            >
+                <CloseIcon fontSize="small" />
+            </IconButton>
         </React.Fragment>
     );
 
@@ -197,9 +195,9 @@ export default function create(props) {
             <Bread title="Ventes" secTitle="Créer" />
 
             <form onSubmit={handleSubmit}>
-                <Grid container spacing={3} style={{marginTop: '10px'}}>
+                <Grid container spacing={3} style={{ marginTop: '10px' }}>
                     <Grid item md={6}>
-                        <TextField label="Bon n°" size="small" name='bon' fullWidth onChange={handleChange} error = {errors.bon ? true : false } />
+                        <TextField label="Bon n°" size="small" name='bon' fullWidth onChange={handleChange} error={errors.bon ? true : false} />
                     </Grid>
                     <Grid item md={6}>
                         <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -211,7 +209,7 @@ export default function create(props) {
                                     setData('date', newValue);
                                 }}
                                 renderInput={(params) => <TextField size="small" {...params} fullWidth />}
-                                
+
                             />
                         </LocalizationProvider>
                         {/* <Input placeholder="Date" name='date' fullWidth inputProps={ariaLabel} onChange={handleChange} /> */}
@@ -239,15 +237,15 @@ export default function create(props) {
                         />
                     </Grid>
                 </Grid>
-                <div style={{ marginTop:'10px' }}>
+                <div style={{ marginTop: '10px' }}>
                     <div style={{ display: 'flex', justifyContent: 'end' }}>
                         <IconButton color="primary" aria-label="ajouter produit" component="label" onClick={addProduitFields}>
                             <AddIcon />
                         </IconButton>
-                        
+
                     </div>
                     {data.produit.map((element, index) => (
-                        <fieldset key={index} style={{ padding: '20px 10px',marginTop:'10px' }}>
+                        <fieldset key={index} style={{ padding: '20px 10px', marginTop: '10px' }}>
                             <legend>Produit {index + 1}</legend>
                             <div>
                                 {index > 0 ?
@@ -271,24 +269,24 @@ export default function create(props) {
                                             styles={selectStyles(errors['produit.' + index + '.name'])}
                                             value={poptions.find(option => option.value === element.name)}
                                         />
-                                        
+
                                     </Grid>
                                     <Grid item md={6}>
-                                        <TextField size="small" 
-                                            type="number" 
-                                            name='quantite' 
-                                            fullWidth 
-                                            label="Quantité" 
-                                            onChange={e => handleProduitChange(index, e)} 
-                                            error = {errors['produit.' + index + '.quantite'] ? true : false }
+                                        <TextField size="small"
+                                            type="number"
+                                            name='quantite'
+                                            fullWidth
+                                            label="Quantité"
+                                            onChange={e => handleProduitChange(index, e)}
+                                            error={errors['produit.' + index + '.quantite'] ? true : false}
                                             value={element.quantite}
                                         />
                                         <div>
-                                            <p style={{color:'red'}}>{errors['produit.' + index + '.quantite']}</p>
+                                            <p style={{ color: 'red' }}>{errors['produit.' + index + '.quantite']}</p>
                                         </div>
                                     </Grid>
                                     <Grid item md={6}>
-                                        <TextField size="small" type="number" value={element.prix} name='prix' fullWidth label="Prix" onChange={e => handleProduitChange(index, e)} error = {errors['produit.' + index + '.prix'] ? true : false } />
+                                        <TextField size="small" type="number" value={element.prix} name='prix' fullWidth label="Prix" onChange={e => handleProduitChange(index, e)} error={errors['produit.' + index + '.prix'] ? true : false} />
                                     </Grid>
                                     <Grid item md={6}>
                                         <TextField size="small" name='somme' fullWidth label="Somme" value={element.somme} disabled />
@@ -298,9 +296,9 @@ export default function create(props) {
                         </fieldset>
                     ))}
                 </div>
-                <Grid container spacing={3} style={{marginTop:'10px',marginBottom:'20px'}}>
+                <Grid container spacing={3} style={{ marginTop: '10px', marginBottom: '20px' }}>
                     <Grid item md={6}>
-                        <TextField size="small" name='total' fullWidth label="Total" value={data.produit.reduce((a, o) => {return a + o.somme},0)} disabled />
+                        <TextField size="small" name='total' fullWidth label="Total" value={data.produit.reduce((a, o) => { return a + o.somme }, 0)} disabled />
                     </Grid>
                     <Grid item md={6}>
                         <Select options={[
@@ -322,7 +320,7 @@ export default function create(props) {
                 {/* <Grid container spacing={3} style={{marginBottom:'20px'}}>
                     
                 </Grid> */}
-                <div style={{display: data.payment == 'Traite' || data.payment == 'Chèque' ? 'block' : 'none',marginBottom:'10px'}}>
+                <div style={{ display: data.payment == 'Traite' || data.payment == 'Chèque' ? 'block' : 'none', marginBottom: '10px' }}>
                     <div style={{ display: 'flex', justifyContent: 'end' }}>
                         <IconButton color="primary" aria-label="ajouter produit" component="label" onClick={addtcFields}>
                             <AddIcon />
@@ -370,7 +368,7 @@ export default function create(props) {
                 </div>
                 <Grid container spacing={3}>
                     <Grid item md={6}>
-                        <TextField name='montant' size="small" fullWidth label='Avance' onChange={handleAvanceChange}/>
+                        <TextField name='montant' size="small" fullWidth label='Avance' onChange={handleAvanceChange} />
                     </Grid>
                     <Grid item md={6}>
                         <TextField name='reste' size="small" fullWidth label='Reste' value={data.reste} disabled />
@@ -383,7 +381,7 @@ export default function create(props) {
                     <Grid item md={12}>
                         <TextField name='observation' fullWidth label='Observation' onChange={handleChange} />
                     </Grid>
-                    
+
                 </Grid>
                 <ThemeProvider theme={theme}>
                     <Button style={{ marginTop: '20px' }} color="neutral" type='submit' variant="contained">Ajouter</Button>

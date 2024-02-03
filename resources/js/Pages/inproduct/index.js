@@ -10,7 +10,7 @@ import Bread from '@/Components/Bread';
 import moment from 'moment';
 
 export default function index(props) {
-    
+
     const { inpro } = props;
 
     const handleNavigate = () => {
@@ -18,7 +18,7 @@ export default function index(props) {
     }
 
     const update = (row) => {
-        Inertia.get(route('editInproduct', { id: row.id}))
+        Inertia.get(route('editInproduct', { id: row.id }))
     }
 
     const columns = [
@@ -38,8 +38,8 @@ export default function index(props) {
                     const id = tableMeta.rowData[0];
                     let row;
                     function search(id, data) {
-                        for(var i = 0; i < data.length; i++){
-                            if(data[i].id === id){
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i].id === id) {
                                 row = data[i]
                                 // console.log(row)
                                 update(row);
@@ -55,23 +55,23 @@ export default function index(props) {
             }
         },
         {
-            name:"productName",
+            name: "productName",
             label: "Nom produit",
             options: {
                 filter: true,
                 filterType: 'multiselect',
             }
         },
+        // {
+        //     name: "reference",
+        //     label: "Référence",
+        //     options: {
+        //         filter: true,
+        //         filterType: 'multiselect',
+        //     }
+        // },
         {
-            name:"reference",
-            label: "Référence",
-            options: {
-                filter: true,
-                filterType: 'multiselect',
-            }
-        },
-        {
-            name:"volume",
+            name: "volume",
             label: "Volume",
             options: {
                 filter: true,
@@ -79,23 +79,23 @@ export default function index(props) {
             }
         },
         {
-            name:"price",
+            name: "price",
             label: "Prix",
             options: {
                 filter: true,
                 filterType: 'multiselect',
             }
         },
+        // {
+        //     name: "quantiteI",
+        //     label: "Quantité initial",
+        //     options: {
+        //         filter: true,
+        //         filterType: 'multiselect',
+        //     }
+        // },
         {
-            name:"quantiteI",
-            label: "Quantité initial",
-            options: {
-                filter: true,
-                filterType: 'multiselect',
-            }
-        },
-        {
-            name:"quantite",
+            name: "quantite",
             label: "Quantité",
             options: {
                 filter: true,
@@ -103,7 +103,7 @@ export default function index(props) {
             }
         },
         {
-            name:"date",
+            name: "date",
             label: "Date d'ajout",
             options: {
                 filter: true,
@@ -116,7 +116,7 @@ export default function index(props) {
     ]
 
     const options = {
-        rowsPerPageOptions: [5,10,15, 50, 100],
+        rowsPerPageOptions: [5, 10, 15, 50, 100],
         rowsPerPage: 10,
         responsive: 'vertical',
         enableNestedDataAccess: '.',
@@ -128,14 +128,14 @@ export default function index(props) {
             }
         },
         customToolbar: () => {
-            return(
+            return (
                 <CustomToolbar handleClick={handleNavigate} />
             )
         }
     }
 
     const otheroptions = {
-        rowsPerPageOptions: [5,10,15, 50, 100],
+        rowsPerPageOptions: [5, 10, 15, 50, 100],
         rowsPerPage: 10,
         responsive: 'vertical',
         enableNestedDataAccess: '.',
@@ -160,39 +160,39 @@ export default function index(props) {
         //     }
         // },
         {
-            name:"productName",
+            name: "productName",
             label: "Nom produit",
             options: {
                 filter: true,
                 filterType: 'multiselect',
             }
         },
+        // {
+        //     name:"reference",
+        //     label: "Référence",
+        //     options: {
+        //         filter: true,
+        //         filterType: 'multiselect',
+        //     }
+        // },
         {
-            name:"reference",
-            label: "Référence",
-            options: {
-                filter: true,
-                filterType: 'multiselect',
-            }
-        },
-        {
-            name:"volume",
+            name: "volume",
             label: "Volume",
             options: {
                 filter: true,
                 filterType: 'multiselect',
             }
         },
+        // {
+        //     name:"quantiteI",
+        //     label: "Quantité initial",
+        //     options: {
+        //         filter: true,
+        //         filterType: 'multiselect',
+        //     }
+        // },
         {
-            name:"quantiteI",
-            label: "Quantité initial",
-            options: {
-                filter: true,
-                filterType: 'multiselect',
-            }
-        },
-        {
-            name:"quantite",
+            name: "quantite",
             label: "Quantité",
             options: {
                 filter: true,
@@ -200,7 +200,7 @@ export default function index(props) {
             }
         },
         {
-            name:"date",
+            name: "date",
             label: "Date d'ajout",
             options: {
                 filter: true,
@@ -218,21 +218,21 @@ export default function index(props) {
             errors={props.errors}
             header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>}
         >
-            <Head title="Produits internes" />
-            <Bread title="Produits Internes" />
+            <Head title="Produits dans le magasin" />
+            <Bread title="Produits dans le magasin" />
             <div>
-                {props.auth.user.role === 'admin' ? 
-                <MUIDataTable
-                    data={inpro}
-                    columns={columns}
-                    options={options}
-                />
-                :
-                <MUIDataTable
-                    data={inpro}
-                    columns={othercolumns}
-                    options={otheroptions}
-                />}
+                {props.auth.user.role === 'admin' ?
+                    <MUIDataTable
+                        data={inpro}
+                        columns={columns}
+                        options={options}
+                    />
+                    :
+                    <MUIDataTable
+                        data={inpro}
+                        columns={othercolumns}
+                        options={otheroptions}
+                    />}
             </div>
         </Authenticated>
     )

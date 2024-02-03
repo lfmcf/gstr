@@ -22,22 +22,22 @@ export default function Bread(props) {
                     underline="hover"
                     sx={{ display: 'flex', alignItems: 'center' }}
                     color="inherit"
-                    href="/material-ui/getting-started/installation/"
+                    href="/"
                 >
                     <WhatshotIcon sx={{ mr: 0.5 }} fontSize="inherit" />
                     {props.title}
                 </Link>
-                {props.secTitle ? 
-                <Link
-                    underline="hover"
-                    sx={{ display: 'flex', alignItems: 'center' }}
-                    color="inherit"
-                    href="/material-ui/getting-started/installation/"
-                >
-                    {/* <WhatshotIcon sx={{ mr: 0.5 }} fontSize="inherit" /> */}
-                    {props.secTitle}
-                </Link>
-                : ''}
+                {props.secTitle ?
+                    <Link
+                        underline="hover"
+                        sx={{ display: 'flex', alignItems: 'center' }}
+                        color="inherit"
+                        href="/"
+                    >
+                        {/* <WhatshotIcon sx={{ mr: 0.5 }} fontSize="inherit" /> */}
+                        {props.secTitle}
+                    </Link>
+                    : ''}
             </Breadcrumbs>
         </div>
     )
