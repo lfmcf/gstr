@@ -27,9 +27,9 @@ export default function Authenticated({ auth, header, children }) {
         <div>
 
             <div className='topBar'>
-               
+
                 <div className='topBarLeft'>
-                    <div style={{marginRight:'10px',color:'black'}}>
+                    <div style={{ marginRight: '10px', color: 'black' }}>
                         {auth.user.name}
                     </div>
                     <div>
@@ -58,7 +58,7 @@ export default function Authenticated({ auth, header, children }) {
                                 <Link href={route('logout')} method="post" as='button'>
                                     <Typography textAlign="center">Log out</Typography>
                                 </Link>
-                                
+
                             </MenuItem>
                         </Menu>
                     </div>
@@ -66,7 +66,7 @@ export default function Authenticated({ auth, header, children }) {
             </div>
 
             <div className='sideBar'>
-                <div style={{ textAlign:'center',zIndex:'100',height:'60px',borderBottom:'1px solid red'}}>
+                <div style={{ textAlign: 'center', zIndex: '100', height: '60px', borderBottom: '1px solid red' }}>
                     <Typography variant="h4" component="h2" className='logoTitle'>Sky</Typography>
                 </div>
                 <ul>
@@ -74,21 +74,36 @@ export default function Authenticated({ auth, header, children }) {
                     <li>
                         <a href="/">Dashboard</a>
                     </li>
-                    {/* // : ''} */}
+                    {auth.user.role === 'admin' ?
+                        <>
+                            <li>
+                                <a href="/conteneurs">Conteneur</a>
+                            </li>
+                        </>
+                        : ''}
+                    <li>
+                        <a href="/inproduct">Magasin</a>
+                    </li>
+                    <li>
+                        <a href="/stock">Stock par vendeur</a>
+                    </li>
+                    {auth.user.role === 'admin' ?
+                        <li>
+                            <a href="/movements">Movements</a>
+                        </li> : ''}
                     <li>
                         <a href="/client">Client</a>
                     </li>
-                   
-                    <li>
-                        <a href="/inproduct">Produit Interne</a>
-                    </li>
-                    {auth.user.role === 'admin' ?
-                    <>
-                    <li>
-                        <a href="/exproduct">Produit Externe</a>
-                    </li>
-                    </>
-                    : ''}
+
+
+
+                    {/* {auth.user.role === 'admin' ?
+                        <>
+                            <li>
+                                <a href="/exproduct">Produit Externe</a>
+                            </li>
+                        </>
+                        : ''} */}
                     <li>
                         <a href="/vendeur">Vendeur</a>
                     </li>
@@ -99,15 +114,15 @@ export default function Authenticated({ auth, header, children }) {
                         <a href="/vente">Vente</a>
                     </li>
                     {auth.user.role === 'admin' ?
-                    <>
-                    <li>
-                        <a href="/facture">Factures</a>
-                    </li>
-                    <li>
-                        <a href="/users">Utilisateurs</a>
-                    </li>
-                    </>
-                    : ''}
+                        <>
+                            <li>
+                                <a href="/facture">Factures</a>
+                            </li>
+                            <li>
+                                <a href="/users">Utilisateurs</a>
+                            </li>
+                        </>
+                        : ''}
                 </ul>
             </div>
 
