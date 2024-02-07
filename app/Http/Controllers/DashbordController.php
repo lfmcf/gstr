@@ -11,6 +11,7 @@ use App\Models\Vente;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 
 use function PHPUnit\Framework\isNull;
@@ -73,6 +74,28 @@ class DashbordController extends Controller
         $to = date('Y-m-d');
         $situation = $this->getSituation($from, $to, 'Tous');
 
+        $currentYear = date('Y');
+        $monthlyCounts = Vente::select(DB::raw('MONTH(date) as month'), DB::raw('COUNT(*) as count'))
+            ->whereYear('date', $currentYear)
+            ->groupBy(DB::raw('MONTH(date)'))
+            ->get();
+
+
+        $cntPerMonth = [];
+        foreach ($monthlyCounts as $monthlyCount) {
+            $count = $monthlyCount->count;
+            $monthNumber = $monthlyCount->month;
+            $monthName = date("F", mktime(0, 0, 0, $monthNumber, 1));
+
+            array_push($cntPerMonth, ['month' => $monthName, 'count' => $count, 'city' => 'ventes']);
+            // echo "Month $month: $count records <br>";
+        }
+
+
+
+
+
+
         if (Auth::user()->role == "admin") {
 
             $situationv = $this->getSituationven($from, $to);
@@ -86,6 +109,7 @@ class DashbordController extends Controller
                 'total' => $total,
                 'situation' => $situation,
                 'situationv' => $situationv,
+                'cntPerMonth' => $cntPerMonth
             ]);
         } else {
             return Inertia::render('UserDash', [
@@ -97,12 +121,33 @@ class DashbordController extends Controller
                 'situation' => $situation,
                 'clt' => $clt,
                 'echeance' => $echeance,
+
             ]);
         }
 
-
-
         // return view('dashboard', compact('echeance', 'cntpex', 'cntpin', 'clits', 'vnts', 'clt', 'total', 'situation'));
+    }
+
+    public function getDateByYear(Request $request)
+    {
+        $year = $request->year;
+        $monthlyCounts = Vente::select(DB::raw('MONTH(date) as month'), DB::raw('COUNT(*) as count'))
+            ->whereYear('date', $year)
+            ->groupBy(DB::raw('MONTH(date)'))
+            ->get();
+
+
+        $cntPerMonth = [];
+        foreach ($monthlyCounts as $monthlyCount) {
+            $count = $monthlyCount->count;
+            $monthNumber = $monthlyCount->month;
+            $monthName = date("F", mktime(0, 0, 0, $monthNumber, 1));
+
+            array_push($cntPerMonth, ['month' => $monthName, 'count' => $count, 'city' => 'ventes']);
+            // echo "Month $month: $count records <br>";
+        }
+
+        return response($cntPerMonth, 200);
     }
 
     public function situation(Request $request)
@@ -144,31 +189,34 @@ class DashbordController extends Controller
         }
 
 
-
         foreach ($situation as $key => $value) {
             foreach ($situation[$key] as $si) {
 
                 $arr = [];
                 foreach ($si->produit as $p) {
                     $name = explode(",", $p['name']);
+
                     if (count($name) > 1) {
                         // $date = str_replace('/', '-', trim($name[3]));
                         // $EndDate = strtotime($date);
                         $pro = InternProduct::where('productName', '=',  $name[0])
                             ->where('volume', trim($name[1]))
-                            // ->where('reference', trim($name[2]))
+                            ->where('reference', trim($name[2]))
                             // ->whereDate('date', date('Y-m-d', $EndDate))
                             ->first();
                     }
-                    // dd($pro->price);
-                    $p['prixAchat'] = $pro->price;
-                    array_push($arr, $p);
+                    if ($pro) {
+                        $p['prixAchat'] = $pro->price;
+                        array_push($arr, $p);
+                    } else {
+                        dd($p, $pro);
+                    }
                 }
                 $si->produit = $arr;
             }
         }
 
-        //dd($situation);
+        // dd($situation);
 
         return $situation;
     }

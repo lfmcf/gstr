@@ -88,6 +88,7 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     //     return Inertia::render('Dashboard');
     // })->middleware(['auth', 'verified'])->name('dashboard');
 
+    Route::post('getDateByYear', [DashbordController::class, 'getDateByYear'])->name('getDateByYear');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -99,12 +100,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/inproduct', [InternProductController::class, 'index']);
 
     Route::get('/charge', [ChargeController::class, 'index']);
+    Route::get('/virment', [ChargeController::class, 'indexv']);
     Route::get('/charge/create', [ChargeController::class, 'create'])->name("createCharge");
     Route::post('/storecharge', [ChargeController::class, 'store'])->name('storecharge');
     Route::get('/charge/update/{id}', [ChargeController::class, 'edit'])->name('editCharge');
     Route::post('/updateCharge', [ChargeController::class, 'update'])->name('updateCharge');
     Route::post('deleteCharge', [ChargeController::class, 'destroy'])->name('deleteCharge');
     Route::post('/getcharge', [ChargeController::class, 'getCharge'])->name('getcharge');
+    Route::post('/getchargev', [ChargeController::class, 'getChargev'])->name('getchargev');
 
     Route::get('/client', [ClientController::class, 'index']);
     Route::get('/client/create', [ClientController::class, 'create'])->name("createClient");

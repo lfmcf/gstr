@@ -14,11 +14,11 @@
     width: 240px;
     box-shadow: 0 1px 30px 1px rgb(0 0 0 / 11%);
     /* padding-top: 60px; */
-    transition: transform .3s,-webkit-transform .3s;
+    transition: transform .3s, -webkit-transform .3s;
     /* background-color: #3d4350; */
-    background-color: rgb(86,152,161);
+    background-color: rgb(86, 152, 161);
     /* background-image: linear-gradient(315deg, #434c61 0%, #3d4350 74%); */
-    color:#fff;
+    color: #fff;
     /* height: calc(100% - 60px); */
     height: 100%;
 }
@@ -30,7 +30,7 @@
     min-height: 60px;
     display: flex;
     box-shadow: 0 2px 15px 0 rgb(0 0 0 / 5%);
-    border-bottom:1px solid #e6e6e6;
+    border-bottom: 1px solid #e6e6e6;
     z-index: 999;
     background: white;
     align-items: center;
@@ -54,7 +54,7 @@
 .main {
     /* padding-left: 25px;
     padding-top: 72px; */
-    padding: 72px 20px 0 255px;
+    padding: 72px 20px 40px 255px;
     min-height: 100vh;
     background: #fff;
 }
@@ -65,11 +65,11 @@
     padding-top: 10px;
 }
 
-.sideBar ul li{
-    padding: 10px 0 15px 30px ;
+.sideBar ul li {
+    padding: 10px 0 15px 30px;
 }
 
-.sideBar ul li a{
+.sideBar ul li a {
     text-decoration: none;
     color: white;
     font-size: 14px;
@@ -97,13 +97,15 @@
     border-collapse: collapse;
 }
 
-.ventShow, .ventShow td, .ventShow th {
+.ventShow,
+.ventShow td,
+.ventShow th {
     border: 1px solid;
     padding: 15px 10px;
 }
 
 .venteBlock {
     display: flex;
-     align-items: end; 
+    align-items: end;
     padding: 0 0 10px 0;
 }

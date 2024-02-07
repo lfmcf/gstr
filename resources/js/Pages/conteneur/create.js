@@ -30,7 +30,7 @@ export default function create(props) {
     const { data, setData, post, processing, errors, clearErrors, reset } = useForm({
         nom: '',
         date: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
-        produit: [{ nom: '', quantite: '', volume: '', prix: '' }],
+        produit: [{ nom: '', quantite: '', reference: '', volume: '', prix: '' }],
         created_by: props.auth.user.id,
         description: ''
     })
@@ -117,10 +117,13 @@ export default function create(props) {
                                         <Grid item md={6}>
                                             <TextField variant='outlined' label="Volume" name='volume' size='small' fullWidth onChange={(e) => handleProduitChange(index, e)} />
                                         </Grid>
-                                        <Grid item md={6}>
+                                        <Grid item md={4}>
                                             <TextField variant='outlined' label="Quantité" name='quantite' size='small' fullWidth onChange={(e) => handleProduitChange(index, e)} />
                                         </Grid>
-                                        <Grid item md={6}>
+                                        <Grid item md={4}>
+                                            <TextField variant='outlined' label="Réference" name='reference' size='small' fullWidth onChange={(e) => handleProduitChange(index, e)} />
+                                        </Grid>
+                                        <Grid item md={4}>
                                             <TextField variant='outlined' label="Prix" name='prix' size='small' fullWidth onChange={(e) => handleProduitChange(index, e)} />
                                         </Grid>
                                     </Grid>

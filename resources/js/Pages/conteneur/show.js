@@ -50,6 +50,7 @@ export default function show(props) {
                                     <TableRow>
                                         <TableCell>Nom</TableCell>
                                         <TableCell align="right">Voluome</TableCell>
+                                        <TableCell align="right">Réference</TableCell>
                                         <TableCell align="right">Prix</TableCell>
                                         <TableCell align="right">Quantité</TableCell>
                                     </TableRow>
@@ -64,6 +65,7 @@ export default function show(props) {
                                                 {row.nom}
                                             </TableCell>
                                             <TableCell align="right">{row.volume}</TableCell>
+                                            <TableCell align="right">{row.reference}</TableCell>
                                             <TableCell align="right">{row.prix}</TableCell>
                                             <TableCell align="right">{row.quantite}</TableCell>
                                         </TableRow>

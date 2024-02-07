@@ -56,7 +56,10 @@ class InternProductController extends Controller
 
         foreach ($products as $pro) {
             if (isset($pro['qaun']) && (int)$pro['qaun'] > 0) {
-                $inpr = InternProduct::where('productName', $pro['nom'])->where('volume', $pro['volume'])->first();
+                $inpr = InternProduct::where('productName', $pro['nom'])
+                    ->where('volume', $pro['volume'])
+                    ->where('reference', $pro['reference'])
+                    ->first();
                 $con = Conteneur::where('nom', $request->conteneur)->first();
 
                 $conp = $con->product;
@@ -78,6 +81,7 @@ class InternProductController extends Controller
                     $pr = new InternProduct();
                     $pr->productName = $pro['nom'];
                     $pr->volume = $pro['volume'];
+                    $pr->reference = $pro['reference'];
                     $pr->price = $pro['prix'];
                     $pr->quantite = $pro['qaun'];
                     $pr->date = $request->date;
