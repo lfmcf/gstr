@@ -112,7 +112,7 @@ export default function create(props) {
                             return (
                                 <Grid container spacing={3} key={i} style={{ marginTop: '10px' }}>
                                     <Grid item md={3} >
-                                        <TextField variant='outlined' size='small' label="produit" value={pr.nom + ',' + pr.volume} fullWidth disabled />
+                                        <TextField variant='outlined' size='small' label="produit" value={pr.nom + ', ' + pr.volume + ', ' + pr.reference} fullWidth disabled />
                                     </Grid>
                                     <Grid item md={3} >
                                         <TextField variant='outlined' size='small' label="Actuel quantité" value={pr.quantite} fullWidth disabled />

@@ -18,14 +18,39 @@ class ChargeController extends Controller
     {
         $from = date('Y-m-01');
         $to = date('Y-m-d');
-        $charge = Charge::whereBetween('date', [$from, $to])->get();
+        $charge = Charge::whereBetween('date', [$from, $to])
+            ->where('operation', 'not like', '%virment%')
+            ->get();
         return Inertia::render('charge/index', [
             'charge' => $charge
         ]);
     }
 
-    public function getCharge(Request $request) {
-        $charge = Charge::whereBetween('date', [date("y-m-d", strtotime($request->fromv)), date("y-m-d", strtotime($request->tov))])->get();
+    public function indexv()
+    {
+        $from = date('Y-m-01');
+        $to = date('Y-m-d');
+        $charge = Charge::whereBetween('date', [$from, $to])
+            ->where('operation', 'like', '%virment%')
+            ->get();
+        return Inertia::render('charge/indexv', [
+            'charge' => $charge
+        ]);
+    }
+
+    public function getCharge(Request $request)
+    {
+        $charge = Charge::whereBetween('date', [date("y-m-d", strtotime($request->fromv)), date("y-m-d", strtotime($request->tov))])
+            ->where('operation', 'not like', '%virment%')
+            ->get();
+        return response()->json($charge);
+    }
+
+    public function getChargev(Request $request)
+    {
+        $charge = Charge::whereBetween('date', [date("y-m-d", strtotime($request->fromv)), date("y-m-d", strtotime($request->tov))])
+            ->where('operation', 'like', '%virment%')
+            ->get();
         return response()->json($charge);
     }
 
@@ -108,7 +133,7 @@ class ChargeController extends Controller
      */
     public function destroy(Charge $charge, Request $request)
     {
-        foreach($request->ids as $id) {
+        foreach ($request->ids as $id) {
             Charge::find($id)->delete($id);
         }
 

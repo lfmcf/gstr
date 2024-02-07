@@ -41,7 +41,7 @@ export default function create(props) {
     })
 
     let poptions = props.pro.map(function (sa) {
-        return { value: sa.productName + ', ' + sa.volume, label: sa.productName + ', ' + sa.volume };
+        return { value: sa.productName + ', ' + sa.volume + ', ' + sa.reference, label: sa.productName + ', ' + sa.volume + ', ' + sa.reference };
     })
 
     const selectStyles = (hasErrors) => ({

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Authenticated from '@/Layouts/Authenticated';
 import { Head } from '@inertiajs/inertia-react';
 import MUIDataTable from "mui-datatables";
@@ -17,7 +17,7 @@ import { usePage } from '@inertiajs/inertia-react';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import moment from 'moment';
-import {TableContainer, Table, TableBody, TableCell, TableRow, TableHead, TablePagination, TableFooter} from '@mui/material';
+import { TableContainer, Table, TableBody, TableCell, TableRow, TableHead, TablePagination, TableFooter } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -36,7 +36,7 @@ export default function index(props) {
     const [openAlert, setOpenAlert] = React.useState(false);
     const [ids, setIds] = React.useState();
     const { flash } = usePage().props;
-    const [fromv, setFromv] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1 ));
+    const [fromv, setFromv] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
     const [tov, setTov] = useState(new Date());
     const [charge, setCharge] = useState(props.charge);
     const totalcharge = charge.reduce((prev, next) => prev + next.montant, 0);
@@ -58,7 +58,7 @@ export default function index(props) {
     }
 
     const update = (row) => {
-        Inertia.get(route('editCharge', { id: row.id}))
+        Inertia.get(route('editCharge', { id: row.id }))
     }
 
     const handleClickV = () => {
@@ -88,8 +88,8 @@ export default function index(props) {
                     const id = tableMeta.rowData[0];
                     let row;
                     function search(id, data) {
-                        for(var i = 0; i < data.length; i++){
-                            if(data[i].id === id){
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i].id === id) {
                                 row = data[i]
                                 // console.log(row)
                                 update(row);
@@ -106,7 +106,7 @@ export default function index(props) {
 
         },
         {
-            name:"operation",
+            name: "operation",
             label: "Opération",
             options: {
                 filter: true,
@@ -114,7 +114,7 @@ export default function index(props) {
             }
         },
         {
-            name:"date",
+            name: "date",
             label: "Date",
             options: {
                 filter: true,
@@ -125,7 +125,7 @@ export default function index(props) {
             }
         },
         {
-            name:"montant",
+            name: "montant",
             label: "Montant",
             options: {
                 filter: true,
@@ -133,7 +133,7 @@ export default function index(props) {
             }
         },
         {
-            name:"ref",
+            name: "ref",
             label: "Réference",
             options: {
                 filter: true,
@@ -156,23 +156,23 @@ export default function index(props) {
         },
         onRowsDelete: (rowsDeleted, dataRows) => {
             const idsToDelete = rowsDeleted.data.map(d => charge[d.dataIndex].id);
-            const ids = {'ids': idsToDelete};
+            const ids = { 'ids': idsToDelete };
             setIds(ids)
             handleClickOpen()
             // Inertia.post(route('deleteCharge', ids));
         },
         customToolbar: () => {
-            return(
+            return (
                 <CustomToolbar handleClick={handleNavigate} />
             )
         },
-        customFooter: (count, page, rowsPerPage ,  changeRowsPerPage, changePage) => {
+        customFooter: (count, page, rowsPerPage, changeRowsPerPage, changePage) => {
             return (
                 <TableFooter>
-                  <TableRow>
-                    <TableCell>Le total des charges est: {totalcharge}</TableCell>
-                  </TableRow>
-                  <TableRow>
+                    <TableRow>
+                        <TableCell>Le total des charges est: {totalcharge}</TableCell>
+                    </TableRow>
+                    <TableRow>
                         <TablePagination
                             rowsPerPageOptions={[5, 10, 25, 50, 100]}
                             count={count}
@@ -181,7 +181,7 @@ export default function index(props) {
                             onRowsPerPageChange={event => changeRowsPerPage(event.target.value)}
                             onPageChange={(_, page) => changePage(page)}
                         />
-                  </TableRow>
+                    </TableRow>
                 </TableFooter>
             );
         }
@@ -200,7 +200,7 @@ export default function index(props) {
         >
             <Head title="Charges" />
             <Bread title="Charges" />
-            <Grid container spacing={2} style={{ marginTop:'10px', marginBottom:'10px' }}>
+            <Grid container spacing={2} style={{ marginTop: '10px', marginBottom: '10px' }}>
                 <Grid item md={5}>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DatePicker
@@ -236,7 +236,7 @@ export default function index(props) {
                 </Grid>
             </Grid>
             <div>
-                
+
                 <MUIDataTable
                     data={charge}
                     columns={columns}

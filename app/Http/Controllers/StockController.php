@@ -52,7 +52,6 @@ class StockController extends Controller
         $stock = Stock::where('vendeur', $request->vendeur)->first();
         if ($stock) {
             $products = $stock->product;
-
             foreach ($request->product as $rp) {
                 foreach ($products as $key => $sp) {
                     if ($sp['name'] == $rp['name']) {

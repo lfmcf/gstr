@@ -6,7 +6,7 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import MUIDataTable from "mui-datatables";
-import {TableContainer, Table, TableBody, TableCell, TableRow, TableHead, TablePagination} from '@mui/material'
+import { TableContainer, Table, TableBody, TableCell, TableRow, TableHead, TablePagination } from '@mui/material'
 import moment from 'moment';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -16,16 +16,18 @@ import Button from '@mui/material/Button';
 import axios from 'axios';
 import Select from 'react-select';
 import TableFooter from "@mui/material/TableFooter";
+import { Chart, LineAdvance } from 'bizcharts';
 
 export default function Dashboard(props) {
 
-    
+
     const [siarr, setSiarr] = useState([])
     const [siarrv, setSiarrv] = useState([])
+    const [totalPerMonth, setTotalPerMonth] = useState(props.cntPerMonth)
     const [payment, setPayement] = useState('Tous')
-    const [from, setFrom] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1 ));
+    const [from, setFrom] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
     const [to, setTo] = useState(new Date());
-    const [fromv, setFromv] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1 ));
+    const [fromv, setFromv] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
     const [tov, setTov] = useState(new Date());
     const [totalsomme, setTotalsomme] = useState();
     const [totalbeni, setTotalbeni] = useState();
@@ -36,16 +38,16 @@ export default function Dashboard(props) {
     }
 
     const handleClick = () => {
-       
+
         axios.post(route('getsituation'), { "from": from, 'to': to, 'payment': payment }).then(res => {
-            
+
             var arr = [];
             for (const key in res.data) {
-                
+
                 var som = 0;
                 var prix = 0, quan = 0, beni = 0;
                 res.data[key].forEach(item => {
-                    
+
                     item.produit.forEach(element => {
                         if (element.name == key) {
                             som += parseInt(element.somme)
@@ -55,7 +57,7 @@ export default function Dashboard(props) {
                         beni = som - (prix * quan)
                     });
                 });
-               
+
                 arr.push({
                     'name': key,
                     'ventes': quan,
@@ -75,7 +77,7 @@ export default function Dashboard(props) {
     }
 
     React.useEffect(() => {
-        
+
         const totalvente = siarr.reduce((prev, next) => prev + next.somme, 0);
         const totalbenife = siarr.reduce((prev, next) => prev + next.benifice, 0);
         setTotalsomme(totalvente)
@@ -84,24 +86,23 @@ export default function Dashboard(props) {
 
     React.useEffect(() => {
         var arr = [], arrv = [];
-        console.table(props.situation)
         for (const key in props.situation) {
-            
+
             var som = 0;
             var prix = 0, quan = 0, beni = 0;
             props.situation[key].forEach(item => {
-                
+
                 item.produit.forEach(element => {
-                    if(element.name === key) {
+                    if (element.name === key) {
                         som += parseInt(element.somme)
                         prix = element.prixAchat
                         quan += parseInt(element.quantite)
                     }
                     beni = som - (prix * quan)
                 });
-                
+
             });
-            
+
             arr.push({
                 'name': key,
                 'ventes': quan,
@@ -111,7 +112,7 @@ export default function Dashboard(props) {
             })
         }
         setSiarr(arr)
-        
+
         setSiarrv(props.situationv)
     }, []);
 
@@ -126,7 +127,7 @@ export default function Dashboard(props) {
             }
         },
         {
-            name:"client",
+            name: "client",
             label: "Client",
             options: {
                 filter: true,
@@ -134,7 +135,7 @@ export default function Dashboard(props) {
             }
         },
         {
-            name:"bon",
+            name: "bon",
             label: "Bon n°",
             options: {
                 filter: true,
@@ -142,7 +143,7 @@ export default function Dashboard(props) {
             }
         },
         {
-            name:"payment",
+            name: "payment",
             label: "Payement",
             options: {
                 filter: true,
@@ -151,7 +152,7 @@ export default function Dashboard(props) {
         },
     ]
     const options = {
-        rowsPerPageOptions: [5,10,15, 50, 100],
+        rowsPerPageOptions: [5, 10, 15, 50, 100],
         rowsPerPage: 5,
         responsive: 'vertical',
         enableNestedDataAccess: '.',
@@ -167,34 +168,34 @@ export default function Dashboard(props) {
             const dataValues = props.echeance.find(x => x.id === rowData[0])
             return (
                 <>
-                <tr>
-                    <td colSpan={7}>
-                        <TableContainer>
-                            <Table aria-label="simple table">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Numero</TableCell>
-                                        <TableCell>Montant</TableCell>
-                                        <TableCell>Date payement</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {dataValues.tc.map((p, index) => (
-                                        <TableRow key={index}>
-                                            {p.numero ? 
-                                            <>
-                                            <TableCell component="th" scope="row">{p.numero}</TableCell>
-                                            <TableCell component="th" scope="row">{p.montant}</TableCell>
-                                            <TableCell component="th" scope="row">{moment(p.date).format('DD/MM/YYYY')}</TableCell>
-                                            </>
-                                            : '' }
+                    <tr>
+                        <td colSpan={7}>
+                            <TableContainer>
+                                <Table aria-label="simple table">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>Numero</TableCell>
+                                            <TableCell>Montant</TableCell>
+                                            <TableCell>Date payement</TableCell>
                                         </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </td>
-                </tr>
+                                    </TableHead>
+                                    <TableBody>
+                                        {dataValues.tc.map((p, index) => (
+                                            <TableRow key={index}>
+                                                {p.numero ?
+                                                    <>
+                                                        <TableCell component="th" scope="row">{p.numero}</TableCell>
+                                                        <TableCell component="th" scope="row">{p.montant}</TableCell>
+                                                        <TableCell component="th" scope="row">{moment(p.date).format('DD/MM/YYYY')}</TableCell>
+                                                    </>
+                                                    : ''}
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </td>
+                    </tr>
                 </>
             )
         }
@@ -211,7 +212,7 @@ export default function Dashboard(props) {
             }
         },
         {
-            name:"bon",
+            name: "bon",
             label: "Bon n°",
             options: {
                 filter: true,
@@ -219,7 +220,7 @@ export default function Dashboard(props) {
             }
         },
         {
-            name:"client",
+            name: "client",
             label: "Client",
             options: {
                 filter: true,
@@ -227,7 +228,7 @@ export default function Dashboard(props) {
             }
         },
         {
-            name:"payment",
+            name: "payment",
             label: "Payement",
             options: {
                 filter: true,
@@ -243,7 +244,7 @@ export default function Dashboard(props) {
         //     }
         // },
         {
-            name:"reste",
+            name: "reste",
             label: "Reste",
             options: {
                 filter: true,
@@ -263,13 +264,13 @@ export default function Dashboard(props) {
                 useDisplayedRowsOnly: false
             }
         },
-        customFooter: (count, page, rowsPerPage ,  changeRowsPerPage, changePage) => {
+        customFooter: (count, page, rowsPerPage, changeRowsPerPage, changePage) => {
             return (
                 <TableFooter>
-                  <TableRow>
-                    <TableCell>Le total des restes est: {totalcredit}</TableCell>
-                  </TableRow>
-                  <TableRow>
+                    <TableRow>
+                        <TableCell>Le total des restes est: {totalcredit}</TableCell>
+                    </TableRow>
+                    <TableRow>
                         <TablePagination
                             rowsPerPageOptions={[5, 10, 25, 50, 100]}
                             count={count}
@@ -278,14 +279,14 @@ export default function Dashboard(props) {
                             onRowsPerPageChange={event => changeRowsPerPage(event.target.value)}
                             onPageChange={(_, page) => changePage(page)}
                         />
-                  </TableRow>
+                    </TableRow>
                 </TableFooter>
             );
         }
     }
 
     const optionSituationM = {
-        rowsPerPageOptions: [5,10,15, 50, 100],
+        rowsPerPageOptions: [5, 10, 15, 50, 100],
         rowsPerPage: 5,
         responsive: 'vertical',
         enableNestedDataAccess: '.',
@@ -296,14 +297,14 @@ export default function Dashboard(props) {
                 useDisplayedRowsOnly: false
             }
         },
-        customFooter: (count, page, rowsPerPage ,  changeRowsPerPage, changePage) => {
+        customFooter: (count, page, rowsPerPage, changeRowsPerPage, changePage) => {
             return (
                 <TableFooter>
-                  <TableRow>
-                    <TableCell>Le total des sommes est: {totalsomme}</TableCell>
-                    <TableCell>Le total de benifice est: {totalbeni}</TableCell>
-                  </TableRow>
-                  <TableRow>
+                    <TableRow>
+                        <TableCell>Le total des sommes est: {totalsomme}</TableCell>
+                        <TableCell>Le total de benifice est: {totalbeni}</TableCell>
+                    </TableRow>
+                    <TableRow>
                         <TablePagination
                             rowsPerPageOptions={[5, 10, 25]}
                             count={count}
@@ -312,7 +313,7 @@ export default function Dashboard(props) {
                             onRowsPerPageChange={event => changeRowsPerPage(event.target.value)}
                             onPageChange={(_, page) => changePage(page)}
                         />
-                  </TableRow>
+                    </TableRow>
                 </TableFooter>
             );
         }
@@ -360,7 +361,7 @@ export default function Dashboard(props) {
                 filterType: 'multiselect',
             }
         },
-       
+
         {
             name: "benifice",
             label: "benifice",
@@ -372,7 +373,7 @@ export default function Dashboard(props) {
     ]
 
     const optionv = {
-        rowsPerPageOptions: [5,10,15, 50, 100],
+        rowsPerPageOptions: [5, 10, 15, 50, 100],
         rowsPerPage: 5,
         responsive: 'vertical',
         enableNestedDataAccess: '.',
@@ -386,35 +387,35 @@ export default function Dashboard(props) {
         expandableRows: true,
         renderExpandableRow: (rowData, rowMeta) => {
             var proarr = siarrv[rowMeta.rowIndex].products
-            
+
             return (
                 <>
-                <tr>
-                    <td colSpan={7}>
-                        <TableContainer>
-                            <Table aria-label="simple table">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Nom</TableCell>
-                                        <TableCell>Quantite</TableCell>
-                                        <TableCell>Total</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {
-                                        Object.keys(proarr).map((key, val) => (
-                                            <TableRow key={val}>
-                                                <TableCell component="th" scope="row">{key}</TableCell>
-                                                <TableCell component="th" scope="row">{Object.values(proarr[key]).reduce((a, b) => parseInt(a) + parseInt(b.qnt), 0)}</TableCell>
-                                                <TableCell component="th" scope="row">{Object.values(proarr[key]).reduce((a, b) => parseInt(a) + parseInt(b.sm), 0)}</TableCell>
-                                            </TableRow>
-                                        ))
-                                    }
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </td>
-                </tr>
+                    <tr>
+                        <td colSpan={7}>
+                            <TableContainer>
+                                <Table aria-label="simple table">
+                                    <TableHead>
+                                        <TableRow>
+                                            <TableCell>Nom</TableCell>
+                                            <TableCell>Quantite</TableCell>
+                                            <TableCell>Total</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {
+                                            Object.keys(proarr).map((key, val) => (
+                                                <TableRow key={val}>
+                                                    <TableCell component="th" scope="row">{key}</TableCell>
+                                                    <TableCell component="th" scope="row">{Object.values(proarr[key]).reduce((a, b) => parseInt(a) + parseInt(b.qnt), 0)}</TableCell>
+                                                    <TableCell component="th" scope="row">{Object.values(proarr[key]).reduce((a, b) => parseInt(a) + parseInt(b.sm), 0)}</TableCell>
+                                                </TableRow>
+                                            ))
+                                        }
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </td>
+                    </tr>
                 </>
             )
         }
@@ -464,7 +465,18 @@ export default function Dashboard(props) {
         },
     ]
 
-    
+    const startYear = 2023; // Replace this with your desired starting year
+    const currentYear = new Date().getFullYear();
+
+    const years = Array.from({ length: currentYear - startYear + 1 }, (_, index) => startYear + index);
+
+
+    const handleyearChange = (year) => {
+        console.log(year)
+        axios.post(route('getDateByYear', { 'year': year.value })).then(res => {
+            setTotalPerMonth(res.data)
+        })
+    }
 
     return (
         <Authenticated
@@ -474,25 +486,26 @@ export default function Dashboard(props) {
         >
             <Head title="Dashboard" />
             <Bread title="Dashboard" />
-            <div style={{marginTop: '20px'}}>
+            <div style={{ marginTop: '20px' }}>
+
                 <Grid container spacing={2}>
                     <Grid item md={3}>
-                        <div className='caro' style={{background: 'linear-gradient(-135deg, #899FD4 0%, #A389D4 100%)'}}>
+                        <div className='caro' style={{ background: 'linear-gradient(-135deg, #899FD4 0%, #A389D4 100%)' }}>
                             <Typography>{props.cntpin} Produits Interne</Typography>
                         </div>
                     </Grid>
                     <Grid item md={3}>
-                        <div className='caro' style={{ background: 'linear-gradient(-135deg, #1de9b6 0%, #1dc4e9 100%)'}}>
+                        <div className='caro' style={{ background: 'linear-gradient(-135deg, #1de9b6 0%, #1dc4e9 100%)' }}>
                             <Typography>{props.cntpex} Produits Externe</Typography>
                         </div>
                     </Grid>
                     <Grid item md={3}>
-                        <div className='caro' style={{ background: 'linear-gradient(-135deg, #bdc3c7  0%, #2c3e50 100%)'}}>
+                        <div className='caro' style={{ background: 'linear-gradient(-135deg, #bdc3c7  0%, #2c3e50 100%)' }}>
                             <Typography>{props.clits} Clients</Typography>
                         </div>
                     </Grid>
                     <Grid item md={3}>
-                        <div className='caro' style={{ background: 'linear-gradient(-135deg, #f27781  0%, #ed4264 100%)'}}>
+                        <div className='caro' style={{ background: 'linear-gradient(-135deg, #f27781  0%, #ed4264 100%)' }}>
                             <Typography>{props.vnts} Ventes</Typography>
                         </div>
                     </Grid>
@@ -500,11 +513,37 @@ export default function Dashboard(props) {
                 <Grid container spacing={2} style={{ marginTop: '10px' }}>
                     <Grid item md={12}>
                         <Typography style={{ marginBottom: '10px' }}>Caise</Typography>
-                        <Paper style={{padding:'10px'}}>
+                        <Paper style={{ padding: '10px' }}>
                             <div>
                                 <p>Total : {props.total} dh</p>
                             </div>
                         </Paper>
+                    </Grid>
+                </Grid>
+                <Grid container spacing={2} style={{ marginTop: '10px' }}>
+                    <Grid item md={12}>
+                        <Typography style={{ marginBottom: '10px' }}>Total des ventes par mois</Typography>
+
+                        <Paper>
+                            <div style={{ display: 'flex', justifyContent: 'end' }}>
+                                <Select options={years.map((year) => ({ label: year, value: year }))}
+                                    className="basic"
+                                    classNamePrefix="basic"
+                                    defaultValue={{ label: currentYear, value: currentYear }}
+                                    onChange={handleyearChange}
+                                />
+                            </div>
+                            <Chart padding={[10, 20, 50, 40]} autoFit height={300} data={totalPerMonth} >
+                                <LineAdvance
+                                    shape="smooth"
+                                    point
+                                    position="month*count"
+                                    color="city"
+                                />
+                            </Chart>
+                        </Paper>
+
+
                     </Grid>
                 </Grid>
                 <Grid container spacing={2} style={{ marginTop: '10px' }}>
@@ -527,8 +566,8 @@ export default function Dashboard(props) {
                         />
                     </Grid>
                 </Grid>
-                
-                <Grid container spacing={2} style={{ marginTop:'10px', marginBottom:'10px' }}>
+
+                <Grid container spacing={2} style={{ marginTop: '10px', marginBottom: '10px' }}>
                     <Grid item md={12}>
                         <Typography style={{ marginBottom: '10px' }}>Situation Mensuelle</Typography>
                     </Grid>
@@ -542,7 +581,7 @@ export default function Dashboard(props) {
                                     setFrom(newValue);
                                 }}
                                 renderInput={(params) => <TextField size='small' {...params} fullWidth />}
-                                
+
                             />
                         </LocalizationProvider>
                     </Grid>
@@ -556,7 +595,7 @@ export default function Dashboard(props) {
                                     setTo(newValue);
                                 }}
                                 renderInput={(params) => <TextField size='small' {...params} fullWidth />}
-                                
+
                             />
                         </LocalizationProvider>
                     </Grid>
@@ -574,11 +613,11 @@ export default function Dashboard(props) {
                             onChange={handleSelectChange}
                             className="basic"
                             classNamePrefix="basic"
-                            defaultValue={{label: payment, value: payment}}
+                            defaultValue={{ label: payment, value: payment }}
                         />
                     </Grid>
                     <Grid item md={2}>
-                        <div style={{height:'100%',display:'flex',alignItems:'center',justifyContent:'center'}}>
+                        <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <Button variant="outlined" onClick={handleClick}>Chercher</Button>
                         </div>
                     </Grid>
@@ -590,7 +629,7 @@ export default function Dashboard(props) {
                         />
                     </Grid>
                 </Grid>
-                <Grid container spacing={2} style={{ marginTop:'10px', marginBottom:'10px' }}>
+                <Grid container spacing={2} style={{ marginTop: '10px', marginBottom: '10px' }}>
                     <Grid item md={12}>
                         <Typography style={{ marginBottom: '10px' }}>Situation Mensuelle par vendeur</Typography>
                     </Grid>
@@ -604,7 +643,7 @@ export default function Dashboard(props) {
                                     setFromv(newValue);
                                 }}
                                 renderInput={(params) => <TextField size='small' {...params} fullWidth />}
-                                
+
                             />
                         </LocalizationProvider>
                     </Grid>
@@ -618,12 +657,12 @@ export default function Dashboard(props) {
                                     setTov(newValue);
                                 }}
                                 renderInput={(params) => <TextField size='small' {...params} fullWidth />}
-                                
+
                             />
                         </LocalizationProvider>
                     </Grid>
                     <Grid item md={2}>
-                        <div style={{height:'100%',display:'flex',alignItems:'center',justifyContent:'center'}}>
+                        <div style={{ height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <Button variant="outlined" onClick={handleClickV}>Chercher</Button>
                         </div>
                     </Grid>
@@ -636,6 +675,6 @@ export default function Dashboard(props) {
                     </Grid>
                 </Grid>
             </div>
-        </Authenticated>
+        </Authenticated >
     );
 }

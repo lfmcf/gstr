@@ -108,7 +108,10 @@ export default function Authenticated({ auth, header, children }) {
                         <a href="/vendeur">Vendeur</a>
                     </li>
                     <li>
-                        <a href="/charge">Charge Et Virement</a>
+                        <a href="/charge">Charge</a>
+                    </li>
+                    <li>
+                        <a href="/virment">Virement</a>
                     </li>
                     <li>
                         <a href="/vente">Vente</a>

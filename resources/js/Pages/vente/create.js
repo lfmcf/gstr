@@ -154,7 +154,7 @@ export default function create(props) {
 
     let poptions = props.pro.map(function (sa) {
         // if(sa.volume) {
-        return { value: sa.productName + ', ' + sa.volume, label: sa.productName + ', ' + sa.volume };
+        return { value: sa.productName + ', ' + sa.volume + ', ' + sa.reference, label: sa.productName + ', ' + sa.volume + ', ' + sa.reference };
         // }else{
         //     return { value: sa.productName + ', ' + moment(sa.date).format('DD/MM/yyyy'), label: sa.productName + ', ' + moment(sa.date).format('DD/MM/yyyy')};
         // }

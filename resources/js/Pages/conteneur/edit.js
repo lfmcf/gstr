@@ -119,10 +119,13 @@ export default function edit(props) {
                                         <Grid item md={6}>
                                             <TextField variant='outlined' label="Volume" name='volume' value={element.volume} size='small' fullWidth onChange={(e) => handleProduitChange(index, e)} />
                                         </Grid>
-                                        <Grid item md={6}>
+                                        <Grid item md={4}>
                                             <TextField variant='outlined' label="Quantité" name='quantite' value={element.quantite} size='small' fullWidth onChange={(e) => handleProduitChange(index, e)} />
                                         </Grid>
-                                        <Grid item md={6}>
+                                        <Grid item md={4}>
+                                            <TextField variant='outlined' label="Réference" name='reference' size='small' fullWidth onChange={(e) => handleProduitChange(index, e)} />
+                                        </Grid>
+                                        <Grid item md={4}>
                                             <TextField variant='outlined' label="Prix" name='prix' value={element.prix} size='small' fullWidth onChange={(e) => handleProduitChange(index, e)} />
                                         </Grid>
                                     </Grid>
@@ -136,7 +139,7 @@ export default function edit(props) {
                         </Grid>
                     </Grid>
                     <ThemeProvider theme={theme}>
-                        <Button style={{ marginTop: '20px' }} color="neutral" type='submit' variant="contained">Ajouter</Button>
+                        <Button style={{ marginTop: '20px' }} color="neutral" type='submit' variant="contained">Modifier</Button>
                     </ThemeProvider>
 
                 </form>

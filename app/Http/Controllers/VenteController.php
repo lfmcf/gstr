@@ -116,7 +116,10 @@ class VenteController extends Controller
         if ($request->vendeur == 'MAGASIN RAJAE') {
             foreach ($request->produit as $p) {
                 $name = explode(",", $p['name']);
-                $produit = InternProduct::where('productName', $name[0])->where('volume', trim($name[1]))->first();
+                $produit = InternProduct::where('productName', $name[0])
+                    ->where('volume', trim($name[1]))
+                    ->where('reference', trim($name[2]))
+                    ->first();
                 $produit->quantite = $produit->quantite - $p['quantite'];
                 $produit->save();
             }

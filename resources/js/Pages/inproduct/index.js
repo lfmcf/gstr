@@ -62,14 +62,14 @@ export default function index(props) {
                 filterType: 'multiselect',
             }
         },
-        // {
-        //     name: "reference",
-        //     label: "Référence",
-        //     options: {
-        //         filter: true,
-        //         filterType: 'multiselect',
-        //     }
-        // },
+        {
+            name: "reference",
+            label: "Référence",
+            options: {
+                filter: true,
+                filterType: 'multiselect',
+            }
+        },
         {
             name: "volume",
             label: "Volume",

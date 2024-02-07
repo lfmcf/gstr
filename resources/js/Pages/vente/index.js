@@ -6,7 +6,7 @@ import CustomToolbar from '@/Components/CustomToolbar';
 import { Inertia } from '@inertiajs/inertia';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
-import {TableContainer, Table, TableBody, TableCell, TableRow, TableHead} from '@mui/material'
+import { TableContainer, Table, TableBody, TableCell, TableRow, TableHead } from '@mui/material'
 import Bread from '@/Components/Bread';
 import SearchIcon from '@mui/icons-material/Search';
 import AddBoxIcon from '@mui/icons-material/AddBox';
@@ -53,9 +53,9 @@ export default function index(props) {
 
     const update = (e, row) => {
         e == "update" ?
-        Inertia.get(route('editVente', { id: row.id})) : 
-        e == "show" ? Inertia.get(route('showVente', { id: row.id})) : 
-        Inertia.get(route('avance', { id: row.id}))
+            Inertia.get(route('editVente', { id: row.id })) :
+            e == "show" ? Inertia.get(route('showVente', { id: row.id })) :
+                Inertia.get(route('avance', { id: row.id }))
     }
 
     React.useEffect(() => {
@@ -85,8 +85,8 @@ export default function index(props) {
                     const id = tableMeta.rowData[0];
                     let row;
                     function search(e, id, data) {
-                        for(var i = 0; i < data.length; i++){
-                            if(data[i].id === id){
+                        for (var i = 0; i < data.length; i++) {
+                            if (data[i].id === id) {
                                 row = data[i]
                                 update(e, row);
                             }
@@ -104,13 +104,13 @@ export default function index(props) {
                                 <AddBoxIcon />
                             </IconButton>
                         </>
-                        
+
                     );
                 }
             }
         },
         {
-            name:"bon",
+            name: "bon",
             label: "Bon n°",
             options: {
                 filter: true,
@@ -124,15 +124,15 @@ export default function index(props) {
                 filter: false,
                 filterType: 'multiselect',
                 customBodyRender: (value, tableMeta, updateValue) => {
-                    const listItems = value.map( pro =>  <li key={pro.name}>{pro.name}</li>)
-                    return(
+                    const listItems = value.map(pro => <li key={pro.name}>{pro.name}</li>)
+                    return (
                         <ul>{listItems}</ul>
                     )
                 }
             }
         },
         {
-            name:"vendeur",
+            name: "vendeur",
             label: "Vendeur",
             options: {
                 filter: true,
@@ -140,7 +140,7 @@ export default function index(props) {
             }
         },
         {
-            name:"client",
+            name: "client",
             label: "Client",
             options: {
                 filter: true,
@@ -148,7 +148,7 @@ export default function index(props) {
             }
         },
         {
-            name:"payment",
+            name: "payment",
             label: "Payment",
             options: {
                 filter: true,
@@ -156,7 +156,7 @@ export default function index(props) {
             }
         },
         {
-            name:"reste",
+            name: "reste",
             label: "Reste",
             options: {
                 filter: true,
@@ -164,7 +164,7 @@ export default function index(props) {
             }
         },
         {
-            name:"date",
+            name: "date",
             label: "Date",
             options: {
                 filter: true,
@@ -175,20 +175,20 @@ export default function index(props) {
             }
         },
         {
-            name:"paye",
+            name: "paye",
             label: "Payé",
             options: {
                 filter: true,
                 filterType: '',
                 customBodyRender: (value) => {
-                    return (value ?  <CheckIcon color='success' /> : <CloseIcon color='error' />)
+                    return (value ? <CheckIcon color='success' /> : <CloseIcon color='error' />)
                 }
             }
         }
     ]
 
     const options = {
-        rowsPerPageOptions: [5,10,15, 50, 100],
+        rowsPerPageOptions: [5, 10, 15, 50, 100, 500, 1000],
         rowsPerPage: 10,
         responsive: 'vertical',
         enableNestedDataAccess: '.',
@@ -201,19 +201,20 @@ export default function index(props) {
         },
         onRowsDelete: (rowsDeleted, dataRows) => {
             const idsToDelete = rowsDeleted.data.map(d => vente[d.dataIndex].id);
-            const ids = {'ids': idsToDelete};
+            const ids = { 'ids': idsToDelete };
             setIds(ids)
             handleClickOpen()
         },
         customToolbar: () => {
-            return(
+            return (
                 <CustomToolbar handleClick={handleNavigate} />
             )
         },
+
         expandableRows: true,
         renderExpandableRow: (rowData, rowMeta) => {
             const dataValues = vente.find(x => x.id === rowData[0])
-            
+
             return (
                 <>
                     <tr>
@@ -246,9 +247,9 @@ export default function index(props) {
                                                 </TableCell>
 
                                             </TableRow>
-                                            
+
                                         ))}
-                                       
+
                                     </TableBody>
                                 </Table>
                             </TableContainer>
