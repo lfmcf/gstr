@@ -85,7 +85,7 @@ export default function index(props) {
                                     {parseddataValues.map((p, index) => (
                                         <TableRow key={index}>
                                             <TableCell component="th" scope="row">
-                                                {p.nom + ',' + p.volume}
+                                                {p.nom + ',' + p.volume + ',' + p.reference}
                                             </TableCell>
                                             <TableCell component="th" scope="row">
                                                 {p.quantite}

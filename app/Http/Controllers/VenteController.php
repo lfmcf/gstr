@@ -13,6 +13,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use DateTime;
+use Illuminate\Support\Collection;
 
 class VenteController extends Controller
 {
@@ -237,7 +238,10 @@ class VenteController extends Controller
         // $exproduit = collect(ExternProduct::all());
         // $enproduit = collect(InternProduct::all());
         // $produit = $exproduit->merge($enproduit);
-        $produit = InternProduct::where('quantite', '>', 0)->get();
+        $produit = InternProduct::all();
+        // $u = $produit->unique('reference')->values();
+        // $p = new Collection($u);
+        // dd($u);
         $clinet = client::all();
         $vendeur = Seller::all();
 
@@ -247,6 +251,17 @@ class VenteController extends Controller
             'client' => $clinet,
             'vendeur' => $vendeur
         ]);
+    }
+
+
+    function findValueInArrayOfObjects($array, $key, $value)
+    {
+        foreach ($array as $item) {
+            if ($item[$key] == $value) {
+                return $item;
+            }
+        }
+        return null; // Value not found
     }
 
     /**
@@ -297,27 +312,58 @@ class VenteController extends Controller
                     if ($original[$pos]['quantite'] != $eletocheck['quantite'] || $original[$pos]['prix'] !=  $eletocheck['prix']) {
                         $pro = $eletocheck['name'];
                         $name = explode(",", $pro);
-                        $date = str_replace('/', '-', trim($name[3]));
-                        $EndDate = strtotime($date);
-                        $produit = InternProduct::where('productName', '=',  $name[0])
-                            ->where('volume', trim($name[1]))
-                            ->where('reference', trim($name[2]))
-                            ->whereDate('date', date('Y-m-d', $EndDate))
-                            ->first();
-                        if ($original[$pos]['quantite'] > $eletocheck['quantite']) {
-                            $quan = $original[$pos]['quantite'] - $eletocheck['quantite'];
-                            $produit->quantite = $produit->quantite + $quan;
-                            $produit->save();
-                            $new[$pos]['prix'] = $eletocheck['prix'];
-                        } else {
-                            $quan = $eletocheck['quantite'] - $original[$pos]['quantite'];
-                            if ($produit->quantite > $quan) {
-                                $produit->quantite = $produit->quantite - $quan;
+                        if ($request->vendeur == 'MAGASIN RAJAE') {
+                            $produit = InternProduct::where('productName', '=',  $name[0])
+                                ->where('volume', trim($name[1]))
+                                ->where('reference', trim($name[2]))
+                                ->first();
+                            if ($original[$pos]['quantite'] > $eletocheck['quantite']) {
+                                $quan = $original[$pos]['quantite'] - $eletocheck['quantite'];
+                                $produit->quantite = $produit->quantite + $quan;
+                                $produit->save();
+                                $new[$pos]['prix'] = $eletocheck['prix'];
                             } else {
-                                return back()->withErrors([$eletocheck['name'] => "la quantité de produit est supérieure à celle du stock"]);
+                                $quan = $eletocheck['quantite'] - $original[$pos]['quantite'];
+                                if ($produit->quantite > $quan) {
+                                    $produit->quantite = $produit->quantite - $quan;
+                                } else {
+                                    return back()->withErrors([$eletocheck['name'] => "la quantité de produit est supérieure à celle du stock"]);
+                                }
+                                $produit->save();
+                                $new[$pos]['prix'] = $eletocheck['prix'];
                             }
-                            $produit->save();
-                            $new[$pos]['prix'] = $eletocheck['prix'];
+                        } else {
+                            $stock = Stock::where('vendeur', $request->vendeur)->first();
+                            $array = $stock->product;
+                            foreach ($array as $key => $value) {
+                                if ($value['name'] == $pro) {
+                                    if ($original[$pos]['quantite'] > $eletocheck['quantite']) {
+                                        $quan = $original[$pos]['quantite'] - $eletocheck['quantite'];
+                                        $array[$key]['quantite'] = $array[$key]['quantite'] +  $quan;
+                                    } else {
+                                        $quan = $eletocheck['quantite'] - $original[$pos]['quantite'];
+                                        $array[$key]['quantite'] = $array[$key]['quantite'] - $quan;
+                                    }
+                                }
+                            }
+
+                            $stock->product = $array;
+                            $stock->save();
+                            // if ($original[$pos]['quantite'] > $eletocheck['quantite']) {
+                            //     $quan = $original[$pos]['quantite'] - $eletocheck['quantite'];
+                            //     $produit->quantite = $produit->quantite + $quan;
+                            //     $produit->save();
+                            //     $new[$pos]['prix'] = $eletocheck['prix'];
+                            // } else {
+                            //     $quan = $eletocheck['quantite'] - $original[$pos]['quantite'];
+                            //     if ($produit->quantite > $quan) {
+                            //         $produit->quantite = $produit->quantite - $quan;
+                            //     } else {
+                            //         return back()->withErrors([$eletocheck['name'] => "la quantité de produit est supérieure à celle du stock"]);
+                            //     }
+                            //     $produit->save();
+                            //     $new[$pos]['prix'] = $eletocheck['prix'];
+                            // }
                         }
                     }
                 }
@@ -327,18 +373,27 @@ class VenteController extends Controller
                 foreach ($nameToAdd as $eletoadd) {
                     $pro = $eletoadd['name'];
                     $name = explode(",", $pro);
-                    $date = str_replace('/', '-', trim($name[3]));
-                    $EndDate = strtotime($date);
-                    $produit = InternProduct::where('productName', '=',  $name[0])
-                        ->where('volume', trim($name[1]))
-                        ->where('reference', trim($name[2]))
-                        ->whereDate('date', date('Y-m-d', $EndDate))
-                        ->first();
-                    if ($produit->quantite > $eletoadd['quantite']) {
-                        $produit->quantite = $produit->quantite - $eletoadd['quantite'];
-                        $produit->save();
+                    if ($request->vendeur == 'MAGASIN RAJAE') {
+                        $produit = InternProduct::where('productName', '=',  $name[0])
+                            ->where('volume', trim($name[1]))
+                            ->where('reference', trim($name[2]))
+                            ->first();
+                        if ($produit->quantite > $eletoadd['quantite']) {
+                            $produit->quantite = $produit->quantite - $eletoadd['quantite'];
+                            $produit->save();
+                        } else {
+                            return back()->withErrors([$eletoadd['name'] => "la quantité de produit est supérieure à celle du stock"]);
+                        }
                     } else {
-                        return back()->withErrors([$eletoadd['name'] => "la quantité de produit est supérieure à celle du stock"]);
+                        $stock = Stock::where('vendeur', $request->vendeur)->first();
+                        $array = $stock->product;
+                        foreach ($array as $key => $value) {
+                            if ($value['name'] == $pro) {
+                                $array[$key]['quantite'] = $array[$key]['quantite'] - $eletoadd['quantite'];
+                            }
+                        }
+                        $stock->product = $array;
+                        $stock->save();
                     }
                 }
             }
@@ -347,15 +402,24 @@ class VenteController extends Controller
                 foreach ($nameToRemove as $eletoremove) {
                     $pro = $eletoremove['name'];
                     $name = explode(",", $pro);
-                    $date = str_replace('/', '-', trim($name[3]));
-                    $EndDate = strtotime($date);
-                    $produit = InternProduct::where('productName', '=',  $name[0])
-                        ->where('volume', trim($name[1]))
-                        ->where('reference', trim($name[2]))
-                        ->whereDate('date', date('Y-m-d', $EndDate))
-                        ->first();
-                    $produit->quantite = $produit->quantite + $eletoadd['quantite'];
-                    $produit->save();
+                    if ($request->vendeur == 'MAGASIN RAJAE') {
+                        $produit = InternProduct::where('productName', '=',  $name[0])
+                            ->where('volume', trim($name[1]))
+                            ->where('reference', trim($name[2]))
+                            ->first();
+                        $produit->quantite = $produit->quantite + $eletoremove['quantite'];
+                        $produit->save();
+                    } else {
+                        $stock = Stock::where('vendeur', $request->vendeur)->first();
+                        $array = $stock->product;
+                        foreach ($array as $key => $value) {
+                            if ($value['name'] == $pro) {
+                                $array[$key]['quantite'] = $array[$key]['quantite'] + $eletoremove['quantite'];
+                            }
+                        }
+                        $stock->product = $array;
+                        $stock->save();
+                    }
                 }
             }
         }

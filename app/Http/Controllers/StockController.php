@@ -48,7 +48,6 @@ class StockController extends Controller
     public function store(Request $request)
     {
 
-
         $stock = Stock::where('vendeur', $request->vendeur)->first();
         if ($stock) {
             $products = $stock->product;
@@ -77,13 +76,13 @@ class StockController extends Controller
 
         foreach ($request->product as $p) {
             $name = explode(",", $p['name']);
-
             $produit = InternProduct::where('productName', '=',  $name[0])
                 ->where('volume', trim($name[1]))
+                ->where('reference', trim($name[2]))
                 ->first();
 
             $produit->quantite = $produit->quantite - $p['quantite'];
-            array_push($pmove, ['nom' => $name[0], 'volume' => $name[1], 'prix' => $produit->price, 'quantite' => $produit->quantite, 'qaun' => $p['quantite']]);
+            array_push($pmove, ['nom' => $name[0], 'volume' => $name[1], 'reference' => $name[2], 'prix' => $produit->price, 'quantite' => $produit->quantite, 'qaun' => $p['quantite']]);
             $produit->save();
         }
 
