@@ -92,10 +92,6 @@ class DashbordController extends Controller
         }
 
 
-
-
-
-
         if (Auth::user()->role == "admin") {
 
             $situationv = $this->getSituationven($from, $to);
@@ -204,6 +200,7 @@ class DashbordController extends Controller
                             ->where('reference', trim($name[2]))
                             // ->whereDate('date', date('Y-m-d', $EndDate))
                             ->first();
+                        // dd($pro);
                     }
                     if ($pro) {
                         $p['prixAchat'] = $pro->price;
