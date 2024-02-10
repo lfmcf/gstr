@@ -197,7 +197,7 @@ class DashbordController extends Controller
                         // $EndDate = strtotime($date);
                         $pro = InternProduct::where('productName', '=',  $name[0])
                             ->where('volume', trim($name[1]))
-                            ->where('reference', trim($name[2]))
+                            // ->where('reference', $name[2])
                             // ->whereDate('date', date('Y-m-d', $EndDate))
                             ->first();
                         // dd($pro);
@@ -206,7 +206,7 @@ class DashbordController extends Controller
                         $p['prixAchat'] = $pro->price;
                         array_push($arr, $p);
                     } else {
-                        dd($p, $pro);
+                        dd($name[0], trim($name[1]), $name[2]);
                     }
                 }
                 $si->produit = $arr;

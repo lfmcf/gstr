@@ -123,7 +123,7 @@ export default function edit(props) {
                                             <TextField variant='outlined' label="Quantité" name='quantite' value={element.quantite} size='small' fullWidth onChange={(e) => handleProduitChange(index, e)} />
                                         </Grid>
                                         <Grid item md={4}>
-                                            <TextField variant='outlined' label="Réference" name='reference' size='small' fullWidth onChange={(e) => handleProduitChange(index, e)} />
+                                            <TextField variant='outlined' label="Réference" name='reference' value={element.reference} size='small' fullWidth onChange={(e) => handleProduitChange(index, e)} />
                                         </Grid>
                                         <Grid item md={4}>
                                             <TextField variant='outlined' label="Prix" name='prix' value={element.prix} size='small' fullWidth onChange={(e) => handleProduitChange(index, e)} />
