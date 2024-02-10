@@ -49,14 +49,18 @@ class StockController extends Controller
     {
 
         $stock = Stock::where('vendeur', $request->vendeur)->first();
+
         if ($stock) {
+
             $products = $stock->product;
             foreach ($request->product as $rp) {
+                // $valToAdd = "";
                 foreach ($products as $key => $sp) {
                     if ($sp['name'] == $rp['name']) {
                         $products[$key]['quantite'] = $sp['quantite'] + $rp['quantite'];
                     } else {
                         $products = [...$products, $rp];
+                        break;
                     }
                 }
             }
@@ -64,6 +68,7 @@ class StockController extends Controller
             $stock->product = $products;
             $stock->save();
         } else {
+
             $stock = new Stock();
             $stock->vendeur = $request->vendeur;
             $stock->date = $request->date;
