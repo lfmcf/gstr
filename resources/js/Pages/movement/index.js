@@ -77,7 +77,7 @@ export default function index(props) {
                                 <TableHead>
                                     <TableRow>
                                         <TableCell>Nom produit</TableCell>
-                                        <TableCell>Quantité initial</TableCell>
+                                        {/* <TableCell>Quantité initial</TableCell> */}
                                         <TableCell>Quantité déplacée</TableCell>
                                     </TableRow>
                                 </TableHead>
@@ -87,9 +87,9 @@ export default function index(props) {
                                             <TableCell component="th" scope="row">
                                                 {p.nom + ',' + p.volume + ',' + p.reference}
                                             </TableCell>
-                                            <TableCell component="th" scope="row">
+                                            {/* <TableCell component="th" scope="row">
                                                 {p.quantite}
-                                            </TableCell>
+                                            </TableCell> */}
                                             <TableCell component="th" scope="row">
                                                 {p.qaun}
                                             </TableCell>
