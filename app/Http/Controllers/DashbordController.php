@@ -205,9 +205,10 @@ class DashbordController extends Controller
                     if ($pro) {
                         $p['prixAchat'] = $pro->price;
                         array_push($arr, $p);
-                    } else {
-                        dd($name[0], trim($name[1]), $name[2]);
                     }
+                    // else {
+                    //     dd($name[0], trim($name[1]), $name[2]);
+                    // }
                 }
                 $si->produit = $arr;
             }
