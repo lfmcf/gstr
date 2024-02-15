@@ -56,7 +56,7 @@ class StockController extends Controller
             foreach ($request->product as $rp) {
                 // $valToAdd = "";
                 foreach ($products as $key => $sp) {
-                    dd($sp['name'], $rp['name']);
+
                     if ($sp['name'] == $rp['name']) {
                         $products[$key]['quantite'] = $sp['quantite'] + $rp['quantite'];
                     } else {
