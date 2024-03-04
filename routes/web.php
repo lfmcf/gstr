@@ -89,6 +89,12 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
     // })->middleware(['auth', 'verified'])->name('dashboard');
 
     Route::post('getDateByYear', [DashbordController::class, 'getDateByYear'])->name('getDateByYear');
+
+    Route::post('getproductbyperson', [VenteController::class, 'getproducts'])->name('getproductbyperson');
+
+    // Route::get('/getproductbyperson', function () {
+    //     return 'hello';
+    // });
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {

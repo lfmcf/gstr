@@ -41,7 +41,7 @@ class VenteController extends Controller
     public function create()
     {
         // $exproduit = collect(ExternProduct::all());
-        $produit = InternProduct::where('quantite', '>', 0)->get();
+        // $produit = InternProduct::where('quantite', '>', 0)->get();
         // $produit = $exproduit->merge($enproduit);
 
         $clinet = client::all();
@@ -49,7 +49,7 @@ class VenteController extends Controller
         $vendeur = Seller::all();
 
         return Inertia::render('vente/create', [
-            'pro' => $produit,
+            // 'pro' => $produit,
             'client' => $clinet,
             'vendeur' => $vendeur
         ]);
@@ -128,6 +128,7 @@ class VenteController extends Controller
             $stock = Stock::where('vendeur', $request->vendeur)->first();
 
             $sproduct = $stock->product;
+
             foreach ($request->produit as $p) {
                 foreach ($sproduct as $key => $sp)
                     if ($p['name'] == $sp['name']) {
@@ -495,5 +496,29 @@ class VenteController extends Controller
         $vent->avance = $avance;
         $vent->save();
         return redirect('vente');
+    }
+
+    public function getproducts(Request $request)
+    {
+
+        $name = $request->nom;
+        if ($name == "MAGASIN RAJAE") {
+            $products = InternProduct::where('quantite', '>', 0)->get();
+            $list = [];
+            foreach ($products as $p) {
+                // dd($p->productName . ', ' . $p->volume . ', ' . $p->reference);
+                array_push($list, ['value' => $p->productName . ', ' . $p->volume . ', ' . $p->reference, 'label' => $p->productName . ', ' . $p->volume . ', ' . $p->reference]);
+            }
+            return response($list, 200);
+        } else {
+            $pro = Stock::where('vendeur', $name)->first();
+            $products = $pro->product;
+            $list = [];
+            foreach ($products as $p) {
+
+                array_push($list, ['value' => $p['name'], 'label' => $p['name']]);
+            }
+            return response($list, 200);
+        }
     }
 }

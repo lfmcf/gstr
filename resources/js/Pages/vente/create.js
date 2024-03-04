@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Authenticated from '@/Layouts/Authenticated';
 import { Head } from '@inertiajs/inertia-react';
 import Grid from '@mui/material/Grid';
@@ -20,6 +20,7 @@ import { usePage } from '@inertiajs/inertia-react';
 import Snackbar from '@mui/material/Snackbar';
 import CloseIcon from '@mui/icons-material/Close';
 import moment from 'moment';
+import axios from 'axios';
 
 const theme = createTheme({
     palette: {
@@ -49,6 +50,7 @@ export default function create(props) {
     });
 
     const [open, setOpen] = React.useState(false);
+    const [pro, setPrro] = useState([]);
     const { flash } = usePage().props
 
     React.useEffect(() => {
@@ -92,6 +94,13 @@ export default function create(props) {
     }
 
     const handleSelectChange = (selectedOption, name) => {
+
+        if (name.name == 'vendeur') {
+
+            axios.post('/getproductbyperson', { nom: selectedOption.value }).then(res => {
+                setPrro(res.data)
+            })
+        }
         name.action == 'clear' ?
             setData(name.name, "") : setData(name.name, selectedOption.value);
         clearErrors(name.name)
@@ -152,14 +161,11 @@ export default function create(props) {
         return { value: sa.name + ' ' + sa.lastName, label: sa.name + ' ' + sa.lastName };
     })
 
-    let poptions = props.pro.map(function (sa) {
-        // if(sa.volume) {
-        return { value: sa.productName + ', ' + sa.volume + ', ' + sa.reference, label: sa.productName + ', ' + sa.volume + ', ' + sa.reference };
-        // }else{
-        //     return { value: sa.productName + ', ' + moment(sa.date).format('DD/MM/yyyy'), label: sa.productName + ', ' + moment(sa.date).format('DD/MM/yyyy')};
-        // }
+    // let poptions = props.pro.map(function (sa) {
 
-    })
+    //     return { value: sa.productName + ', ' + sa.volume + ', ' + sa.reference, label: sa.productName + ', ' + sa.volume + ', ' + sa.reference };
+
+    // })
 
     React.useEffect(() => {
         setData('reste', data.produit.reduce((a, o) => { return parseInt(a) + parseInt(o.somme) }, 0) - data.avance[0].montant)
@@ -259,7 +265,7 @@ export default function create(props) {
                                 }
                                 <Grid container spacing={3}>
                                     <Grid item md={6}>
-                                        <Select options={poptions}
+                                        <Select options={pro}
                                             name="name"
                                             onChange={(selectedOption, nom) => handleProduitSelectChange(selectedOption, nom, index)}
                                             className="basic"
@@ -267,7 +273,7 @@ export default function create(props) {
                                             placeholder='Nom produit'
                                             isClearable
                                             styles={selectStyles(errors['produit.' + index + '.name'])}
-                                            value={poptions.find(option => option.value === element.name)}
+                                            value={pro.find(option => option.value === element.name)}
                                         />
 
                                     </Grid>
