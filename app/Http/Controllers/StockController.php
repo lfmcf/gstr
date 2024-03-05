@@ -53,19 +53,21 @@ class StockController extends Controller
         if ($stock) {
 
             $products = $stock->product;
-            foreach ($request->product as $rp) {
-                // $valToAdd = "";
-                foreach ($products as $key => $sp) {
 
-                    if ($sp['name'] == $rp['name']) {
-                        $products[$key]['quantite'] = $sp['quantite'] + $rp['quantite'];
-                    } else {
-                        $products = [...$products, $rp];
-                        break;
-                    }
+            $incomingProduct = $request->product;
+
+            for ($i = 0; $i < count($incomingProduct); $i++) {
+                $oneTocheck = $incomingProduct[$i];
+                $nameTocheck = $oneTocheck['name'];
+                $found = $this->findProductInArray($nameTocheck, $products);
+
+                if ($found !== false) {
+                    $products[$found]['quantite'] = $oneTocheck['quantite'] + $products[$found]['quantite'];
+                } else {
+                    $products = [...$products, $oneTocheck];
                 }
             }
-
+            $stock->date = $request->date;
             $stock->product = $products;
             $stock->save();
         } else {
@@ -100,6 +102,16 @@ class StockController extends Controller
         $move->save();
 
         return redirect('stock');
+    }
+
+    public function findProductInArray($val, $arr)
+    {
+        $key = array_search($val, array_column($arr, 'name'));
+        if ($key !== FALSE) {
+            return $key;
+        } else {
+            return false;
+        }
     }
 
     /**
