@@ -90,8 +90,6 @@ Route::middleware(['auth', 'verified', 'admin'])->group(function () {
 
     Route::post('getDateByYear', [DashbordController::class, 'getDateByYear'])->name('getDateByYear');
 
-    Route::post('getproductbyperson', [VenteController::class, 'getproducts'])->name('getproductbyperson');
-
     // Route::get('/getproductbyperson', function () {
     //     return 'hello';
     // });
@@ -142,6 +140,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/stock', [StockController::class, 'index'])->name('stock');
     Route::get('/attach', [StockController::class, 'create'])->name('attach');
     Route::post('attahctoseller', [StockController::class, 'store']);
+
+    Route::post('getproductbyperson', [VenteController::class, 'getproducts'])->name('getproductbyperson');
 });
 
 
