@@ -40,7 +40,7 @@ export default function index(props) {
             }
         },
         {
-            name: "date",
+            name: "created_at",
             label: "Date d'opération",
             options: {
                 filter: true,
